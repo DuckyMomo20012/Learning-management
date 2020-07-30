@@ -1,6 +1,15 @@
-#ifndef _FUNCTION_H_
-#define _FUNCTION_H_
+#pragma once
 #include <iostream>
 using namespace std;
 
-#endif
+class Person {
+private:
+	string _name;
+public:
+	
+public:
+};
+
+class Student : Person {
+
+};

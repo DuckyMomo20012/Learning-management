@@ -144,6 +144,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Function.h" />
+    <ClInclude Include="Support\Address.h" />
+    <ClInclude Include="Support\Date.h" />
+    <ClInclude Include="Support\Random.h" />
+    <ClInclude Include="Support\Tokenizer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Support\MyLibrary.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

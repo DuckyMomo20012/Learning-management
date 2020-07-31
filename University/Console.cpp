@@ -1,5 +1,18 @@
 #include "Console.h"
 
+void Button::loadButton() {
+	fstream file;
+	file.open("button.txt");
+	while (!file.eof()) {
+		string temp;
+		getline(file, temp);
+		vector<string> split(Tokenizer::split(temp, " "));
+		Point locate(stoi(split[1]), stoi(split[2]));
+		_store.insert(make_pair(split[0], locate));
+	}
+	file.close();
+}
+
 void Console::resizeConsole(int width, int height) {
 	HWND console = GetConsoleWindow();
 	RECT r;
@@ -17,4 +30,8 @@ void Console::goTo(int x, int y) {
 	Cursor.Y = y;
 	hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleCursorPosition(hConsoleOutput, Cursor); // DI CHUYEN 
+}
+
+void Console::drawMenuPanel() {
+	cout << "HISFSDFSDFSDF";
 }

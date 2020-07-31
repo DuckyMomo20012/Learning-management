@@ -49,7 +49,7 @@ public:
 	string Department() { return _department; }
 	void setDepartment(string value) { _department = value; }
 public:
-	string showInfo() override;
+
 };
 
 class Prof : public Person {

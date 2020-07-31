@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
+#include <vector>
 #include <sstream>
+#include "Tokenizer.h"
 using namespace std;
 
 class Address {
@@ -10,6 +12,7 @@ public:
 	Address() : _number(""), _ward(""), _street(""), _district(""), _city("") {}
 	Address(string number, string ward, string street, string district, string city) 
 	: _number(number), _ward(ward), _street(street), _district(district), _city(city) {}
+	Address(string value);
 public:
 	void Number(string value) { _number = value; }
 	string getNumber() { return _number; }
@@ -23,4 +26,5 @@ public:
 	string getCityName() { return _city; }
 public:
 	string showFullAddress();
+	void parseAddress(string value);
 };

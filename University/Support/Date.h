@@ -9,6 +9,7 @@ private:
 public:
 	Date() : _day(1), _month(1), _year(1900) {}
 	Date(int day, int month, int year);
+	Date(string value);
 public:
 	int Day() { return _day; }
 	void setDay(int value) { _day = value; }
@@ -19,5 +20,7 @@ public:
 public:
 	bool isLeapYear(int year);
 	bool isValidDate(int day, int month, int year);
+	void parseDate(string value);
+	bool tryParseDate(string value);
 	string showDate();
 };

@@ -1,5 +1,29 @@
 #include "Console.h"
 
+Point Button::operator[] (string i) {
+	try {
+		if (_store.find(i) == _store.end()) throw "Invalid index";
+	}
+	catch (const char* msg) {
+		cout << msg << endl;
+	}
+	return _store[i];
+}
+
+pair<string, Point> Button::operator[] (int i) {
+	try {
+		if ((unsigned)i > _store.size()) throw "Invalid index";
+	}
+	catch (const char* msg) {
+		cout << msg << endl;
+	}
+	auto it = _store.begin(); //map iterator
+	while (--i >= 0) ++it;
+	pair <string, Point> p;
+	p.first = it->first;
+	p.second = it->second;
+	return p;
+}
 void Button::loadButton() {
 	fstream file;
 	file.open("button.txt");
@@ -13,7 +37,7 @@ void Button::loadButton() {
 	file.close();
 }
 
-void Console::resizeConsole(int width, int height) {
+void Interface::resizeConsole(int width, int height) {
 	HWND console = GetConsoleWindow();
 	RECT r;
 	LONG style = GetWindowLong(console, GWL_STYLE);
@@ -23,7 +47,7 @@ void Console::resizeConsole(int width, int height) {
 	MoveWindow(console, r.left, r.top, width, height, TRUE);
 }
 
-void Console::goTo(int x, int y) {
+void Interface::goTo(int x, int y) {
 	HANDLE hConsoleOutput;
 	COORD Cursor;
 	Cursor.X = x;
@@ -32,6 +56,9 @@ void Console::goTo(int x, int y) {
 	SetConsoleCursorPosition(hConsoleOutput, Cursor); // DI CHUYEN 
 }
 
-void Console::drawMenuPanel() {
-	cout << "HISFSDFSDFSDF";
+void Interface::drawMenuPanel() {
+	for (int i = 0; i < 3; i++) {
+		goTo(_button[i].second.X(), _button[i].second.Y());
+		cout << _button[i].first;
+	}
 }

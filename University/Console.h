@@ -1,6 +1,6 @@
 #pragma once
 #include <Windows.h>
-#include <map>
+#include <unordered_map>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -23,18 +23,25 @@ public:
 
 class Button {
 private:
-	map <string, Point> _store;
+	unordered_map <string, Point> _store;
+	friend class Interface;
 public:
 	Button() {
 		loadButton();
 	}
-	friend class Console;
 public:
-
+	Point operator[] (string i);
+	pair<string, Point> operator[] (int i);
 	void loadButton();
 };
 
-class Console {
+class Interface {
+private:
+	Button _button;
+public:
+	Interface() {
+		resizeConsole(600, 500);
+	}
 public:
 	void resizeConsole(int width, int height);
 	void goTo(int x, int y);

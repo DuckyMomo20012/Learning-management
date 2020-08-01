@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
 #include <sstream>
-#include "Console.h"
 #include "Support/Random.h"
 #include "Support/Address.h"
 #include "Support/Date.h"
@@ -14,7 +13,8 @@ private:
 	Date _DOB;
 public:
 	Person() : _id(""), _name(""), _tel(""), _email("") {}
-	Person(string id, string name, string tel, string email, string address, string dob);
+	Person(string id, string name, string tel, string email, string address, string dob)
+		: _id(id), _name(name), _tel(tel), _email(email), _address(address), _DOB(dob) {}
 public:
 	string Id() { return _id; }
 	void setId(string value) { _id = value; }
@@ -29,7 +29,7 @@ public:
 	Date DOB() { return _DOB; }
 	void setDOB(Date value) { _DOB = value; }
 public:
-	virtual string showInfo() = 0;
+	//virtual string showInfo() = 0;
 };
 
 class Student : public Person {
@@ -60,3 +60,4 @@ public:
 	Prof(string id, string name, string tel, string email, string address, string dob)
 		: Person(id, name, tel, email, address, dob) {}
 };
+

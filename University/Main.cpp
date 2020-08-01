@@ -1,6 +1,6 @@
-#include "Function.h"
+#include "Person.h"
+#include "Console.h"
 int main() {
-	Button s;
-	Console c;
-	c.drawMenuPanel();
+	Interface i;
+	i.drawMenuPanel();
 }

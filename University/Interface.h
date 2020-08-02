@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "Person.h"
 #include "Support/Tokenizer.h"
 using namespace std;
 
@@ -21,29 +22,42 @@ public:
 	void setY(int value) { _y = value; }
 };
 
-class Button {
+enum Menu {
+	INFO,
+	SCHEDULE,
+	TRANSCRIPT,
+	TEST,
+	ENROLL
+};
+
+class State {
 private:
-	unordered_map <string, Point> _store;
+	static int _countStu;
+	static int _countProf;
+private:
+	unordered_map <int, Student> _allStu;
+	unordered_map <int, Prof> _allProf;
 	friend class Interface;
-public:
-	Button() {
-		loadButton();
-	}
-public:
-	Point operator[] (string i);
-	pair<string, Point> operator[] (int i);
-	void loadButton();
 };
 
 class Interface {
 private:
-	Button _button;
+	State _state;
+	unordered_map <int, Point> _menu;
+	unordered_map <int, Point> _button;
 public:
 	Interface() {
-		resizeConsole(600, 500);
+		resizeConsole(800, 500);
+		loadButton("MenuButton.txt", _menu);
+		loadStu();
+		loadProf();
 	}
 public:
 	void resizeConsole(int width, int height);
 	void goTo(int x, int y);
+	void loadButton(const char* fileName, unordered_map <int, Point>& _store);
+	void loadStu();
+	void loadProf();
 	void drawMenuPanel();
+	void showStudentInfo(string id);
 };

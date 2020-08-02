@@ -1,6 +1,9 @@
-#include "Person.h"
-#include "Console.h"
+#include "Interface.h"
+
+int State::_countStu = 0;
+int State::_countProf = 0;
+
 int main() {
-	Interface i;
-	i.drawMenuPanel();
+	Interface s;
+	s.showStudentInfo("19127631");
 }

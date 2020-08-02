@@ -27,8 +27,8 @@ void Address::parseAddress(string value) {
 
 string Address::showFullAddress() {
 	stringstream writer;
-	writer << _number << " Duong " << _street
-		<< " Phuong " << _ward << " Quan "
-		<< _district << " Thanh pho " << _city;
+	writer << _number << "Duong " << _street
+		<< "Phuong " << _ward << "Quan "
+		<< _district << "Thanh pho " << _city;
 	return writer.str();
 }

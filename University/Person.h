@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
 #include <sstream>
-#include "Support/Random.h"
 #include "Support/Address.h"
 #include "Support/Date.h"
 using namespace std;
@@ -13,8 +12,7 @@ private:
 	Date _DOB;
 public:
 	Person() : _id(""), _name(""), _tel(""), _email("") {}
-	Person(string id, string name, string tel, string email, string address, string dob)
-		: _id(id), _name(name), _tel(tel), _email(email), _address(address), _DOB(dob) {}
+	explicit Person(string value);
 public:
 	string Id() { return _id; }
 	void setId(string value) { _id = value; }
@@ -28,8 +26,6 @@ public:
 	void setAddress(Address value) { _address = value; }
 	Date DOB() { return _DOB; }
 	void setDOB(Date value) { _DOB = value; }
-public:
-	//virtual string showInfo() = 0;
 };
 
 class Student : public Person {
@@ -37,11 +33,15 @@ private:
 	string _schoolYear, _department; // department: khoa
 public:
 	Student() : Person(), _schoolYear(""), _department("") {}
-	Student(string id, string name, string tel, string email, string address, string dob, string schoolYear, string department) 
-		: Person(id, name, tel, email, address, dob)	
-	{	
-		_schoolYear = schoolYear;
-		_department = department;
+	Student(string value) : Person(value) {
+		vector<string> _store(Tokenizer::split(value, "(", ")"));
+		try {
+			setSchoolYear(_store[6]);
+			setDepartment(_store[7]);
+		}
+		catch (...) {
+			cout << "Invalid string format" << endl;
+		}
 	}
 public:
 	string SchoolYear() { return _schoolYear; }
@@ -53,11 +53,8 @@ public:
 };
 
 class Prof : public Person {
-private:
-	
 public:
 	Prof() : Person() {}
-	Prof(string id, string name, string tel, string email, string address, string dob)
-		: Person(id, name, tel, email, address, dob) {}
+	Prof(string value) : Person(value) {}
 };
 

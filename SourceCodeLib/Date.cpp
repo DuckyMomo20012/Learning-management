@@ -45,8 +45,8 @@ bool Date::isLeapYear(int year) {
 bool Date::isValidDate(int day, int month, int year) {
 	bool flag = true;
 	if (year < 1900) flag = false;
-	else if (month < 0 || month > 13) flag = false;
-	else if (day < 0 || day > 32) flag = false;
+	else if (month < 1 || month > 12) flag = false;
+	else if (day < 1 || day > 31) flag = false;
 	else {
 		int MaxDay[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 		if (isLeapYear(year)) MaxDay[1] = 29;

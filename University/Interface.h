@@ -1,13 +1,16 @@
 #pragma once
-#include <Windows.h>
-#include <unordered_map>
+#include <unordered_set>
 #include <fstream>
 #include <string>
 #include <vector>
 #include <iostream>
+#include "Console.h"
 #include "Person.h"
+#include "json.hpp"
 #include "Support/Tokenizer.h"
 using namespace std;
+
+using json = nlohmann::json;
 
 class Point {
 private:
@@ -32,32 +35,26 @@ enum Menu {
 
 class State {
 private:
-	static int _countStu;
-	static int _countProf;
-private:
-	unordered_map <int, Student> _allStu;
-	unordered_map <int, Prof> _allProf;
+	unordered_set<Student*> _allStu;
+	unordered_set <Prof*> _allProf;
 	friend class Interface;
+public:
+	State() {}
+	~State();
+	State(const State& other);
+	State& operator= (const State& other);
+public:
+	void loadStu(const char* fileName);
 };
 
 class Interface {
 private:
 	State _state;
-	unordered_map <int, Point> _menu;
-	unordered_map <int, Point> _button;
+	unordered_set <Point*> _menu;
 public:
 	Interface() {
-		resizeConsole(800, 500);
-		loadButton("MenuButton.txt", _menu);
-		loadStu();
-		loadProf();
 	}
-public:
-	void resizeConsole(int width, int height);
-	void goTo(int x, int y);
-	void loadButton(const char* fileName, unordered_map <int, Point>& _store);
-	void loadStu();
-	void loadProf();
-	void drawMenuPanel();
-	void showStudentInfo(string id);
+	void load (const char* fileName){
+		_state.loadStu(fileName);
+	}
 };

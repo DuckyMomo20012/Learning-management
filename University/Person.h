@@ -1,9 +1,14 @@
 #pragma once
 #include <iostream>
 #include <sstream>
+#include <unordered_map>
+#include "Course.h"
+#include "json.hpp"
 #include "Support/Address.h"
 #include "Support/Date.h"
 using namespace std;
+
+using json = nlohmann::json;
 
 class Person {
 private:
@@ -11,8 +16,8 @@ private:
 	Address _address;
 	Date _DOB;
 public:
-	Person() : _id(""), _name(""), _tel(""), _email("") {}
-	explicit Person(string value);
+	Person() : _id(""), _name(""), _tel(""), _email("") {};
+	Person(string id, const json& j);
 public:
 	string Id() { return _id; }
 	void setId(string value) { _id = value; }
@@ -32,16 +37,10 @@ class Student : public Person {
 private:
 	string _schoolYear, _department; // department: khoa
 public:
-	Student() : Person(), _schoolYear(""), _department("") {}
-	Student(string value) : Person(value) {
-		vector<string> _store(Tokenizer::split(value, "(", ")"));
-		try {
-			setSchoolYear(_store[6]);
-			setDepartment(_store[7]);
-		}
-		catch (...) {
-			cout << "Invalid string format" << endl;
-		}
+	Student() : Person(), _schoolYear(""), _department("") {};
+	Student(string id, const json& j) : Person(id, j) {
+		setSchoolYear(j["schoolyear"]);
+		setDepartment(j["department"]);
 	}
 public:
 	string SchoolYear() { return _schoolYear; }
@@ -55,6 +54,6 @@ public:
 class Prof : public Person {
 public:
 	Prof() : Person() {}
-	Prof(string value) : Person(value) {}
+	Prof(string id, const json& j) : Person(id, j) {};
 };
 

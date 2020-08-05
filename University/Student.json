@@ -1,0 +1,22 @@
+[
+{
+    "id" : "19127631",
+    "name" : "Vinh",
+    "tel" : "0971288696",
+    "email" : "tienvinh.duong4@gmail.com",
+    "address" : "418/10/2 Duong Le Van Tho Phuong 16 Quan Go Vap Thanh pho Ho Chi Minh",
+    "dob" : "03/09/2001",
+    "schoolyear" : "K19",
+    "department" : "CNTT"
+},
+{
+    "id" : "19127632",
+    "name" : "Hung",
+    "tel" : "0971288695",
+    "email" : "tienvinh1.duong4@gmail.com",
+    "address" : "419/10/2 Duong Le Van Tho Phuong 16 Quan Go Vap Thanh pho Ho Chi Minh",
+    "dob" : "03/09/2002",
+    "schoolyear" : "K20",
+    "department" : "CNPM"
+}
+]

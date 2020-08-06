@@ -1,12 +1,26 @@
 #include "Person.h"
 
-Person::Person(string id, const json& j) {
+Person::Person(string id, const json& info) {
 	setId(id);
-	setName(j["name"]);
-	setTel(j["tel"]);
-	setEmail(j["email"]);
-	Address _tempAddress(j["address"]);
+	setName(info["name"]);
+	setTel(info["tel"]);
+	setEmail(info["email"]);
+	Address _tempAddress(info["address"]);
 	setAddress(_tempAddress);
-	Date _tempDOB(j["dob"]);
+	Date _tempDOB(info["dob"]);
 	setDOB(_tempDOB);
+}
+
+Student::Student(Student& other) {
+	setId(other.Id());
+	setName(other.Name());
+	setTel(other.Tel());
+	setEmail(other.Email());
+	setAddress(other.getAddress());
+	setDOB(other.DOB());
+	setSchoolYear(other._schoolYear);
+	setDepartment(other._department);
+	for (auto it : other._course) {
+		this->_course.push_back(it);
+	}
 }

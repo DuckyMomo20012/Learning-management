@@ -1,22 +1,46 @@
 [
-{
-    "id" : "19127631",
-    "name" : "Vinh",
-    "tel" : "0971288696",
-    "email" : "tienvinh.duong4@gmail.com",
-    "address" : "418/10/2 Duong Le Van Tho Phuong 16 Quan Go Vap Thanh pho Ho Chi Minh",
-    "dob" : "03/09/2001",
-    "schoolyear" : "K19",
-    "department" : "CNTT"
-},
-{
-    "id" : "19127632",
-    "name" : "Hung",
-    "tel" : "0971288695",
-    "email" : "tienvinh1.duong4@gmail.com",
-    "address" : "419/10/2 Duong Le Van Tho Phuong 16 Quan Go Vap Thanh pho Ho Chi Minh",
-    "dob" : "03/09/2002",
-    "schoolyear" : "K20",
-    "department" : "CNPM"
-}
+    {
+        "id" : "19127631",
+        "name" : "Vinh",
+        "tel" : "0971288696",
+        "email" : "tienvinh.duong4@gmail.com",
+        "address" : "30/10/2 Duong Le Van Tho Phuong 16 Quan Go Vap Thanh pho Ho Chi Minh",
+        "dob" : "03/09/2001",
+        "schoolyear" : "K19",
+        "department": "CNTT",
+        "course": [
+          {
+            "id" : "CSC0002",
+            "name" :  "DSTT",
+            "point" : [8, 9, 10]
+          },
+          {
+            "id" : "CSC00001",
+            "name" : "OOP",
+            "point" : [10, 8, 9]
+          }
+        ]
+    },
+    {
+        "id" : "19127632",
+        "name" : "Hung",
+        "tel" : "0971288695",
+        "email" : "tienvinh1.duong4@gmail.com",
+        "address" : "25/10/2 Duong Le Van Tho Phuong 16 Quan Go Vap Thanh pho Ho Chi Minh",
+        "dob" : "03/09/2002",
+        "schoolyear" : "K20",
+        "department" : "CNPM",
+        "course": [
+          {
+            "id" : "CSC0004",
+            "name" :  "VTP2",
+            "point" : [8, 9, 10, 9, 9]
+          },
+          {
+            "id" : "CSC00005",
+            "name" : "CNXHKH",
+            "point" : [10, 5, 9, 10]
+          }
+        ]
+    }
 ]

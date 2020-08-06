@@ -2,6 +2,6 @@
 
 int main() {
 	Interface i;
-	i.load("Student.json");
+	i.drawInfoPanel("19127631");
 	return 0;
 }

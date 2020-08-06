@@ -1,11 +1,11 @@
 #pragma once
-#include <unordered_set>
+#include <unordered_map>
 #include <fstream>
 #include <string>
-#include <vector>
 #include <iostream>
 #include "Console.h"
 #include "Person.h"
+#include "Course.h"
 #include "json.hpp"
 #include "Support/Tokenizer.h"
 using namespace std;
@@ -35,8 +35,10 @@ enum Menu {
 
 class State {
 private:
-	unordered_set<Student*> _allStu;
-	unordered_set <Prof*> _allProf;
+	unordered_map<string, Student*> _allStu;
+	unordered_map<string, Prof*> _allProf;
+	unordered_map<string, Course*> _allCourse;
+	unordered_map<int, vector<Point*>> _allButton;
 	friend class Interface;
 public:
 	State() {}
@@ -44,17 +46,17 @@ public:
 	State(const State& other);
 	State& operator= (const State& other);
 public:
-	void loadStu(const char* fileName);
+	void loadAllStudent(const char* fileName);
+	void loadAllButton(const char* fileName);
 };
 
 class Interface {
 private:
 	State _state;
-	unordered_set <Point*> _menu;
 public:
 	Interface() {
+		_state.loadAllButton("Button.json");
+		_state.loadAllStudent("Student.json");
 	}
-	void load (const char* fileName){
-		_state.loadStu(fileName);
-	}
+	void drawInfoPanel(string id);
 };

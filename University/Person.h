@@ -1,6 +1,5 @@
 #pragma once
 #include <iostream>
-#include <sstream>
 #include <unordered_map>
 #include "Course.h"
 #include "json.hpp"
@@ -17,7 +16,7 @@ private:
 	Date _DOB;
 public:
 	Person() : _id(""), _name(""), _tel(""), _email("") {};
-	Person(string id, const json& j);
+	Person(string id, const json& info);
 public:
 	string Id() { return _id; }
 	void setId(string value) { _id = value; }
@@ -36,17 +35,32 @@ public:
 class Student : public Person {
 private:
 	string _schoolYear, _department; // department: khoa
+	vector<Course*> _course;
 public:
 	Student() : Person(), _schoolYear(""), _department("") {};
-	Student(string id, const json& j) : Person(id, j) {
-		setSchoolYear(j["schoolyear"]);
-		setDepartment(j["department"]);
+	Student(string id, const json& info) : Person(id, info) {
+		setSchoolYear(info["schoolyear"]);
+		setDepartment(info["department"]);
+		if (info["course"].size() > 0) {
+			for (auto it : info["course"]) {
+				_course.push_back(new Course(it["id"], it));
+			}
+		}
 	}
+	Student(Student& other);
+	~Student() {
+		for (auto it : _course) {
+			delete it;
+		}
+	}
+
 public:
 	string SchoolYear() { return _schoolYear; }
 	void setSchoolYear(string value) { _schoolYear = value; }
 	string Department() { return _department; }
 	void setDepartment(string value) { _department = value; }
+	vector<Course*> getCourse() { return _course; }
+	void setCourse(vector<Course*> value) { _course = value; }
 public:
 
 };
@@ -54,6 +68,6 @@ public:
 class Prof : public Person {
 public:
 	Prof() : Person() {}
-	Prof(string id, const json& j) : Person(id, j) {};
+	Prof(string id, const json& info) : Person(id, info) {};
 };
 

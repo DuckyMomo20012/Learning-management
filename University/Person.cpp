@@ -1,7 +1,7 @@
 #include "Person.h"
 
-Person::Person(string id, const json& info) {
-	setId(id);
+Person::Person(const json& info) {
+	setId(info["id"]);
 	setName(info["name"]);
 	setTel(info["tel"]);
 	setEmail(info["email"]);

@@ -1,6 +1,5 @@
 #pragma once
 #include <iostream>
-#include <unordered_map>
 #include "Course.h"
 #include "json.hpp"
 #include "Support/Address.h"
@@ -16,7 +15,7 @@ private:
 	Date _DOB;
 public:
 	Person() : _id(""), _name(""), _tel(""), _email("") {};
-	Person(string id, const json& info);
+	Person(const json& info);
 public:
 	string Id() { return _id; }
 	void setId(string value) { _id = value; }
@@ -38,12 +37,12 @@ private:
 	vector<Course*> _course;
 public:
 	Student() : Person(), _schoolYear(""), _department("") {};
-	Student(string id, const json& info) : Person(id, info) {
+	Student(const json& info) : Person(info) {
 		setSchoolYear(info["schoolyear"]);
 		setDepartment(info["department"]);
 		if (info["course"].size() > 0) {
 			for (auto it : info["course"]) {
-				_course.push_back(new Course(it["id"], it));
+				_course.push_back(new Course(it));
 			}
 		}
 	}
@@ -68,6 +67,5 @@ public:
 class Prof : public Person {
 public:
 	Prof() : Person() {}
-	Prof(string id, const json& info) : Person(id, info) {};
+	Prof(const json& info) : Person(info) {};
 };
-

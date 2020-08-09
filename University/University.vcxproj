@@ -141,16 +141,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Console.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Interface.cpp" />
     <ClCompile Include="Course.cpp" />
     <ClCompile Include="Person.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Point.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Console.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="Interface.h" />
     <ClInclude Include="Course.h" />
     <ClInclude Include="Person.h" />
+    <ClInclude Include="Point.h" />
     <ClInclude Include="Support\Address.h" />
     <ClInclude Include="Support\Date.h" />
     <ClInclude Include="Support\Random.h" />

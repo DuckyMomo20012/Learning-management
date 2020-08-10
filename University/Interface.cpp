@@ -125,17 +125,15 @@ void Interface::move(Grid& _grid) {
 	}
 }
 
-//void Interface::drawMenuPanel() {
-//	Grid _grid(1, 5, 1, 4);
-//	vector<vector<Point*>> grid = _grid.getGrid();
-//	Point root(3, 1);
-//	_grid.createGrid(root);
-//	for (int i = 0; i < 5; i++) {
-//		grid[0][i]->setContent(_menu[i]);
-//	}
-//	_grid.setGrid(grid);
-//	_grid.beautifyGrid();
-//}
+void Interface::drawMenuPanel(Grid& _grid) {
+	Grid _menu(1, 5, 2, 2);
+	Point root_menu(2, 1);
+	_menu.createGrid(root_menu);
+	for (int i = 0; i < 5; i++) {
+		_menu[0][i]->setContent(_state._menu[i]);
+	}
+	_grid.insertAbove(_menu);
+}
 
 void Interface::drawInfoPanel(string id) {
 	Grid _grid(6, 1, 1, 4);
@@ -147,35 +145,20 @@ void Interface::drawInfoPanel(string id) {
 	_grid[3][0]->setContent("TELEPHONE: " + _state._allStu[id]->Tel());
 	_grid[4][0]->setContent("EMAIL: " + _state._allStu[id]->Email());
 	_grid[5][0]->setContent("ADDRESS: " + _state._allStu[id]->getAddress().showFullAddress());
-	//Grid _grid2(6, 1, 1, 4);
-	//Point root1(30, 3);
-	//_grid2.createGrid(root1);
-	//_grid2[0][0]->setContent("ID: " + _state._allStu["19127632"]->Id());
-	//_grid2[1][0]->setContent("NAME: " + _state._allStu["19127632"]->Name());
-	//_grid2[2][0]->setContent("D.O.B: " + _state._allStu["19127632"]->DOB().showDate());
-	//_grid2[3][0]->setContent("TELEPHONE: " + _state._allStu["19127632"]->Tel());
-	//_grid2[4][0]->setContent("EMAIL: " + _state._allStu["19127632"]->Email());
-	//_grid2[5][0]->setContent("ADDRESS: " + _state._allStu["19127632"]->getAddress().showFullAddress());
-	//_grid.insertRight(_grid2);
-	//_grid.beautifyGrid();
+	drawMenuPanel(_grid);
+	_grid.beautifyGrid();
 	_grid.showContentFullGrid();
 	move(_grid);
 }
 
 void Interface::drawSchedulePanel(string id) {
-	Grid _menu(1, 5, 2, 2);
-	Point root_menu(2, 1);
-	_menu.createGrid(root_menu);
-	for (int i = 0; i < 5; i++) {
-		_menu[0][i]->setContent(_state._menu[i]);
-	}
-	Grid _shift(4, 1, 2, 2);
+	Grid _shift(6, 1, 2, 2);
 	Point root(2, 1);
 	_shift.createGrid(root);
-	_shift[0][0]->setContent("1");
-	_shift[1][0]->setContent("2");
-	_shift[2][0]->setContent("3");
-	_shift[3][0]->setContent("4");
+	_shift[2][0]->setContent("1");
+	_shift[3][0]->setContent("2");
+	_shift[4][0]->setContent("3");
+	_shift[5][0]->setContent("4");
 	Grid _schedule(5, 5, 2, 2);
 	Point root2(4, 3);
 	_schedule.createGrid(root2);
@@ -190,7 +173,7 @@ void Interface::drawSchedulePanel(string id) {
 			}
 		}
 	}
-	_schedule.insertAbove(_menu);
+	drawMenuPanel(_schedule);
 	_schedule.insertLeft(_shift);
 	_schedule.beautifyGrid();
 	_schedule.showContentFullGrid();

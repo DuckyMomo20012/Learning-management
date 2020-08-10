@@ -69,7 +69,7 @@ void Grid::beautifyGrid() {
 			}
 		}
 		for (unsigned k = 0; k < _grid.size(); k++) {
-			if (_grid[k].size() > i) {
+			if (_grid[k].size() > i && _grid[k].size() > 1) {
 				_grid[k][i + 1]->setX(max_x + max_string + _colGap);
 			}
 		}

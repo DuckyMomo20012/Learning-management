@@ -46,7 +46,7 @@ public:
 	}
 public:
 	void move(Grid& _grid);
-	//void drawMenuPanel();
+	void drawMenuPanel(Grid& _grid);
 	void drawInfoPanel(string id);
 	void drawSchedulePanel(string id);
 	//void drawTranscriptPanel(string id);

@@ -147,43 +147,53 @@ void Interface::drawInfoPanel(string id) {
 	_grid[3][0]->setContent("TELEPHONE: " + _state._allStu[id]->Tel());
 	_grid[4][0]->setContent("EMAIL: " + _state._allStu[id]->Email());
 	_grid[5][0]->setContent("ADDRESS: " + _state._allStu[id]->getAddress().showFullAddress());
-	Grid _grid2(6, 1, 1, 4);
-	Point root1(30, 3);
-	_grid2.createGrid(root1);
-	_grid2[0][0]->setContent("ID: " + _state._allStu[id]->Id());
-	_grid2[1][0]->setContent("NAME: " + _state._allStu[id]->Name());
-	_grid2[2][0]->setContent("D.O.B: " + _state._allStu[id]->DOB().showDate());
-	_grid2[3][0]->setContent("TELEPHONE: " + _state._allStu[id]->Tel());
-	_grid2[4][0]->setContent("EMAIL: " + _state._allStu[id]->Email());
-	_grid2[5][0]->setContent("ADDRESS: " + _state._allStu[id]->getAddress().showFullAddress());
-	_grid.insertRight(_grid2);
-	_grid.beautifyGrid();
+	//Grid _grid2(6, 1, 1, 4);
+	//Point root1(30, 3);
+	//_grid2.createGrid(root1);
+	//_grid2[0][0]->setContent("ID: " + _state._allStu["19127632"]->Id());
+	//_grid2[1][0]->setContent("NAME: " + _state._allStu["19127632"]->Name());
+	//_grid2[2][0]->setContent("D.O.B: " + _state._allStu["19127632"]->DOB().showDate());
+	//_grid2[3][0]->setContent("TELEPHONE: " + _state._allStu["19127632"]->Tel());
+	//_grid2[4][0]->setContent("EMAIL: " + _state._allStu["19127632"]->Email());
+	//_grid2[5][0]->setContent("ADDRESS: " + _state._allStu["19127632"]->getAddress().showFullAddress());
+	//_grid.insertRight(_grid2);
+	//_grid.beautifyGrid();
 	_grid.showContentFullGrid();
 	move(_grid);
 }
 
-//
-//void Interface::drawSchedulePanel(string id) {
-//	Point root(5, 5);
-//	_state.setGrid(root, 5, 6, 1, 10);
-//	for (unsigned i = 1; i < _state._grid[1].size(); i++) {
-//		goTo(_state._grid[1][i]->X(), _state._grid[1][i]->Y());
-//		cout << _weekday[i - 1];
-//	}
-//	for (unsigned i = 2; i < _state._grid.size(); i++) {
-//		goTo(_state._grid[i][0]->X(), _state._grid[i][0]->Y());
-//		cout << i - 1;
-//	}
-//	for (unsigned i = 2; i < _state._grid.size(); i++) {
-//		for (unsigned j = 1; j < _state._grid[i].size(); j++) {
-//			goTo(_state._grid[i][j]->X(), _state._grid[i][j]->Y());
-//			for (auto it : _state._allStu[id]->getCourse()) {
-//				if (it->Time()[_weekday[j - 1]] == i - 1) {
-//					cout << it->Name();
-//				}
-//			}
-//		}
-//	}
-//	move();
-//}
+void Interface::drawSchedulePanel(string id) {
+	Grid _menu(1, 5, 2, 2);
+	Point root_menu(2, 1);
+	_menu.createGrid(root_menu);
+	for (int i = 0; i < 5; i++) {
+		_menu[0][i]->setContent(_state._menu[i]);
+	}
+	Grid _shift(4, 1, 2, 2);
+	Point root(2, 1);
+	_shift.createGrid(root);
+	_shift[0][0]->setContent("1");
+	_shift[1][0]->setContent("2");
+	_shift[2][0]->setContent("3");
+	_shift[3][0]->setContent("4");
+	Grid _schedule(5, 5, 2, 2);
+	Point root2(4, 3);
+	_schedule.createGrid(root2);
+	for (int i = 0; i < 5; i++) {
+		string weekday = _state._weekday[i];
+		_schedule[0][i]->setContent(weekday);
+		for (auto it : _state._allStu[id]->getCourse()) {
+			map<string, int> time = it->Time();
+			if (time.find(weekday) != time.end()) {
+				int shift = it->Time()[weekday];
+				_schedule[shift][i]->setContent(it->Name());
+			}
+		}
+	}
+	_schedule.insertAbove(_menu);
+	_schedule.insertLeft(_shift);
+	_schedule.beautifyGrid();
+	_schedule.showContentFullGrid();
+	move(_schedule);
+}
 

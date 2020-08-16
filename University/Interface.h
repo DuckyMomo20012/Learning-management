@@ -1,10 +1,7 @@
 #pragma once
-#include <conio.h>
-#include <map>
 #include <fstream>
 #include <string>
 #include <iostream>
-#include "Console.h"
 #include "Person.h"
 #include "Course.h"
 #include "Grid.h"
@@ -16,38 +13,32 @@ using json = nlohmann::json;
 
 class State {
 private:
-	map<string, Student*> _allStu;
-	map<string, Prof*> _allProf;
-	map<string, Course*> _allCourse;
-	Grid _menuGrid;
-	vector <string> _menu = { "INFO", "SCHEDULE", "TRANSCRIPT", "TEST", "ENROLL" };
-	vector <string> _weekday = { "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" };
+	Student* _user;
+	Grid _menuPage;
 	friend class Interface;
 public:
-	State() : _menuGrid(1, 5, 5, 2){}
-	~State() {} // Ko can thiet
+	State() : _user(), _menuPage() {}
+	~State();
 	State(const State& other);
 	State& operator= (const State& other);
-public:
-	void setGridMenu();
-	void loadAllStudent(const char* fileName);
-	void loadAllCourse(const char* fileName);
-	//void loadAllButton(const char* fileName);
 };
 
 class Interface {
 private:
 	State _state;
+	map<Point* , void (Interface::*)()> _command;
+	vector<Point*> _trackProgress;
 public:
 	Interface() {
-		//_state.loadAllButton("Button.json");
-		_state.loadAllStudent("Student.json");
-		//drawMenuPanel();
+		resizeConsole(900, 500);
 	}
 public:
-	void move(Grid& _grid);
-	void drawMenuPanel(Grid& _grid);
-	void drawInfoPanel(string id);
-	void drawSchedulePanel(string id);
-	//void drawTranscriptPanel(string id);
+	void resizeConsole(int width, int height);
+	void moveWithinGrid(Grid& _grid);
+	void loginPage();
+	void menuPage();
+	void infoPage();
+	void schedulePage();
+	void exitPage();
+	bool confirmExit();
 };

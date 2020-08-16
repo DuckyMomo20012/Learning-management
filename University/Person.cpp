@@ -5,10 +5,8 @@ Person::Person(const json& info) {
 	setName(info["name"]);
 	setTel(info["tel"]);
 	setEmail(info["email"]);
-	Address _tempAddress(info["address"]);
-	setAddress(_tempAddress);
-	Date _tempDOB(info["dob"]);
-	setDOB(_tempDOB);
+	setAddress(info["address"]);
+	setDOB(info["dob"]);
 }
 
 Student::Student(Student& other) {
@@ -23,4 +21,19 @@ Student::Student(Student& other) {
 	for (auto it : other._course) {
 		this->_course.push_back(it);
 	}
+}
+
+Student& Student::operator=(Student& other) {
+	setId(other.Id());
+	setName(other.Name());
+	setTel(other.Tel());
+	setEmail(other.Email());
+	setAddress(other.getAddress());
+	setDOB(other.DOB());
+	setSchoolYear(other._schoolYear);
+	setDepartment(other._department);
+	for (auto it : other._course) {
+		this->_course.push_back(it);
+	}
+	return *this;
 }

@@ -1,123 +1,71 @@
 #include "Interface.h"
 
 State::State(const State& other) {
-	map<string, Student*> temp1;
-	map<string, Prof*> temp2;
-	map<string, Course*> temp3;
-	_allStu.swap(temp1);
-	_allProf.swap(temp2);
-	_allCourse.swap(temp3);
-	for (auto it : other._allStu) {
-		_allStu.insert(it);
-	}
-	for (auto it : other._allProf) {
-		_allProf.insert(it);
-	}
-	for (auto it : other._allCourse) {
-		_allCourse.insert(it);
-	}
+	_user = other._user;
 }
 
 State& State::operator= (const State& other) {
-	map<string, Student*> temp1;
-	map<string, Prof*> temp2;
-	map<string, Course*> temp3;
-	_allStu.swap(temp1);
-	_allProf.swap(temp2);
-	_allCourse.swap(temp3);
-	// swap voi object rong se xoa tat ca du lieu cua cai bi swap, luc nay capacity = 0
-	// xai clear() thi capacity != 0
-	for (auto it : other._allStu) {
-		_allStu.insert(it);
-	}
-	for (auto it : other._allProf) {
-		_allProf.insert(it);
-	}
-	for (auto it : other._allCourse) {
-		_allCourse.insert(it);
-	}
+	_user = other._user;
 	return *this;
 }
 
-void State::setGridMenu() {
-	Point root(3, 1);
-	_menuGrid.createGrid(root);
-	for (int i = 0; i < 5; i++) {
-		_menuGrid[0][i]->setContent(_menu[0]);
-	}
+State::~State() {
+	delete _user;
 }
 
-void State::loadAllStudent(const char* fileName) {
-	ifstream file(fileName, ios::in);
-	if (file.fail()) cout << "Cannot open file!!!";
-	else {
-		json _array = json::array();
-		file >> _array;
-		for (unsigned i = 0; i < _array.size(); i++) {
-			_allStu.insert(make_pair(_array[i]["id"], new Student(_array[i])));
-		}
-	}
-	file.close();
+void Interface::resizeConsole(int width, int height) {
+	HWND console = GetConsoleWindow();
+	RECT r;
+	LONG style = GetWindowLong(console, GWL_STYLE);
+	style = style & ~(WS_MAXIMIZEBOX) & ~(WS_THICKFRAME);
+	SetWindowLong(console, GWL_STYLE, style); // LAM MO NUT MAXIMIZE
+	GetWindowRect(console, &r); // THAY DOI KICH CO CMD
+	MoveWindow(console, r.left, r.top, width, height, TRUE);
 }
 
-void State::loadAllCourse(const char* fileName) {
-	ifstream file(fileName, ios::in);
-	if (file.fail()) cout << "Cannot open file!!!";
-	else {
-		json _array = json::array();
-		file >> _array;
-		for (unsigned i = 0; i < _array.size(); i++) {
-			_allCourse.insert(make_pair(_array[i]["id"], new Course(_array[i])));
-		}
-	}
-	file.close();
-}
-
-//void State::loadAllButton(const char* fileName) {
-//	ifstream file(fileName, ios::in);
-//	if (file.fail()) cout << "Cannot open file!!!";
-//	else {
-//		json _array = json::array();
-//		file >> _array;
-//		vector <Point*> _store;
-//		for (unsigned i = 0; i < _array.size(); i++) {	
-//			_store.push_back(new Point(_array[i][0]["x"], _array[i][0]["y"]));
-//		}
-//		_grid.push_back(_store);
-//	}
-//	file.close();
-//}
-
-void Interface::move(Grid& _grid) {
+void Interface::moveWithinGrid(Grid& _grid) {
 	unsigned row = 0, col = 0;
-	goTo(_grid[row][col]->X() - 1, _grid[row][col]->Y());
-	while (1) {
+	//goTo(_grid[row][col]->X() - 1, _grid[row][col]->Y());
+	_grid[0][0]->setPointerTo();
+	bool flag = true;
+	while (flag) {
 		switch (toupper(_getch())) {
 		case 'W': {
-			if (row > 0 && _grid[row - 1].size() >= col) {
-				goTo(_grid[row - 1][col]->X() - 1, _grid[row - 1][col]->Y());
-				row--;
+			if (row > 0 && _grid[row - 1].size() > col) {
+				//goTo(_grid[row - 1][col]->X() - 1, _grid[row - 1][col]->Y());
+				_grid[--row][col]->setPointerTo();
 			}
 			break;
 		}
 		case 'S': {
-			if (row < (unsigned)_grid.Row() - 1 && _grid[row + 1].size() >= col) {
-				goTo(_grid[row + 1][col]->X() - 1, _grid[row + 1][col]->Y());
-				row++;
+			if (row < (unsigned)_grid.Row() - 1 && _grid[row + 1].size() > col) {
+				//goTo(_grid[row + 1][col]->X() - 1, _grid[row + 1][col]->Y());
+				_grid[++row][col]->setPointerTo();
 			}
 			break;
 		}
 		case 'A': {
 			if (col > 0) {
-				goTo(_grid[row][col - 1]->X() - 1, _grid[row][col - 1]->Y());
-				col--;
+				//goTo(_grid[row][col - 1]->X() - 1, _grid[row][col - 1]->Y());
+				_grid[row][--col]->setPointerTo();
 			}
 			break;
 		}
 		case 'D': {
 			if (col < _grid[row].size() - 1) {
-				goTo(_grid[row][col + 1]->X() - 1, _grid[row][col + 1]->Y());
-				col++;
+				//goTo(_grid[row][col + 1]->X() - 1, _grid[row][col + 1]->Y());
+				_grid[row][++col]->setPointerTo();
+			}
+			break;
+		}
+		case 27: {
+			flag = false;
+			break;
+		}
+		case 13: {
+			if (_command.find(_grid[row][col]) != _command.end()) {
+				(this->*_command[_grid[row][col]])();
+				_trackProgress.push_back(_grid[row][col]);
 			}
 			break;
 		}
@@ -125,58 +73,109 @@ void Interface::move(Grid& _grid) {
 	}
 }
 
-void Interface::drawMenuPanel(Grid& _grid) {
-	Grid _menu(1, 5, 2, 2);
-	Point root_menu(2, 1);
-	_menu.createGrid(root_menu);
-	for (int i = 0; i < 5; i++) {
-		_menu[0][i]->setContent(_state._menu[i]);
-	}
-	_grid.insertAbove(_menu);
-}
-
-void Interface::drawInfoPanel(string id) {
-	Grid _grid(6, 1, 1, 4);
-	Point root(3, 3);
-	_grid.createGrid(root);
-	_grid[0][0]->setContent("ID: " + _state._allStu[id]->Id());
-	_grid[1][0]->setContent("NAME: " + _state._allStu[id]->Name());
-	_grid[2][0]->setContent("D.O.B: " + _state._allStu[id]->DOB().showDate());
-	_grid[3][0]->setContent("TELEPHONE: " + _state._allStu[id]->Tel());
-	_grid[4][0]->setContent("EMAIL: " + _state._allStu[id]->Email());
-	_grid[5][0]->setContent("ADDRESS: " + _state._allStu[id]->getAddress().showFullAddress());
-	drawMenuPanel(_grid);
-	_grid.beautifyGrid();
-	_grid.showContentFullGrid();
-	move(_grid);
-}
-
-void Interface::drawSchedulePanel(string id) {
-	Grid _shift(6, 1, 2, 2);
-	Point root(2, 1);
-	_shift.createGrid(root);
-	_shift[2][0]->setContent("1");
-	_shift[3][0]->setContent("2");
-	_shift[4][0]->setContent("3");
-	_shift[5][0]->setContent("4");
-	Grid _schedule(5, 5, 2, 2);
-	Point root2(4, 3);
-	_schedule.createGrid(root2);
-	for (int i = 0; i < 5; i++) {
-		string weekday = _state._weekday[i];
-		_schedule[0][i]->setContent(weekday);
-		for (auto it : _state._allStu[id]->getCourse()) {
-			map<string, int> time = it->Time();
-			if (time.find(weekday) != time.end()) {
-				int shift = it->Time()[weekday];
-				_schedule[shift][i]->setContent(it->Name());
+void Interface::loginPage() {
+	Point textBox(20, 10);
+	Point loginTextBox(29, 10);
+	Point errorTextBox(29, 11);
+	bool flag = false;
+	ifstream file("Student.json", ios::in);
+	if (file.fail()) cout << "Cannot open file!" << endl;
+	else {
+		textBox >> "NHAP ID:";
+		cout << textBox;
+		json allStudent = json::array();
+		file >> allStudent;
+		while (flag == false) {
+			string id = loginTextBox.controlConsoleInput(20);
+			for (unsigned i = 0; i < allStudent.size(); i++) {
+				if (allStudent[i]["id"] == id) {
+					flag = true;
+					if (!errorTextBox.isEmpty()) errorTextBox.clearPrintedContent();
+					_state._user = new Student(allStudent[i]);
+					break;
+				}
+				else {
+					loginTextBox.clearPrintedContent();
+					errorTextBox >> "Can't find this id";
+					cout << errorTextBox;
+				}
 			}
 		}
 	}
-	drawMenuPanel(_schedule);
-	_schedule.insertLeft(_shift);
-	_schedule.beautifyGrid();
-	_schedule.showContentFullGrid();
-	move(_schedule);
+	file.close();
+	if (flag == true) menuPage();
 }
 
+void Interface::menuPage() {
+	system("cls");
+	_state._menuPage = Grid(1, 5, 2, 4);
+	Point menuPageCoordinate(2, 2);
+	_state._menuPage.createGrid(menuPageCoordinate);
+	_state._menuPage[0][0]->operator>> ("INFO");
+	_state._menuPage[0][1]->operator>> ("SCHEDULE");
+	_state._menuPage[0][2]->operator>> ("TRANSCRIPT");
+	_state._menuPage[0][3]->operator>> ("ENROLL");
+	_state._menuPage[0][4]->operator>> ("EXIT"); 
+	_state._menuPage.beautifyGrid();
+	void (Interface:: * infoCommand)() = &Interface::infoPage;
+	_command.insert(make_pair(_state._menuPage[0][0], infoCommand));
+	void (Interface:: * scheduleCommand)() = &Interface::schedulePage;
+	_command.insert(make_pair(_state._menuPage[0][1], scheduleCommand));
+	_state._menuPage.showContentFullGrid();
+	moveWithinGrid(_state._menuPage);
+}
+
+void Interface::infoPage() {
+	system("cls");
+	Grid infoPage(6, 1, 2, 4);
+	Point infoPageCoordinate(3, 3);
+	infoPage.createGrid(infoPageCoordinate);
+	infoPage[0][0]->setContent("ID: " + _state._user->Id());
+	infoPage[1][0]->setContent("NAME: " + _state._user->Name());
+	infoPage[2][0]->setContent("D.O.B: " + _state._user->DOB());
+	infoPage[3][0]->setContent("TELEPHONE: " + _state._user->Tel());
+	infoPage[4][0]->setContent("EMAIL: " + _state._user->Email());
+	infoPage[5][0]->setContent("ADDRESS: " + _state._user->getAddress());
+	infoPage.insertAbove(_state._menuPage);
+	infoPage.beautifyGrid();
+	infoPage.showContentFullGrid();
+	moveWithinGrid(infoPage);
+}
+
+void Interface::schedulePage() {
+	system("cls");
+	vector <string> weekday = { "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" };
+	Grid shiftPanel(4, 1, 2, 4);
+	Point root(2, 4);
+	shiftPanel.createGrid(root);
+	shiftPanel[0][0]->setContent("1");
+	shiftPanel[1][0]->setContent("2");
+	shiftPanel[2][0]->setContent("3");
+	shiftPanel[3][0]->setContent("4");
+	Grid schedulePage(5, 5, 2, 2);
+	Point root2(4, 3);
+	schedulePage.createGrid(root2);
+	for (int i = 0; i < 5; i++) {
+		schedulePage[0][i]->setContent(weekday[i]);
+		for (auto it : _state._user->getCourse()) {
+			map<string, int> time = it->Time();
+			if (time.find(weekday[i]) != time.end()) {
+				int shift = it->Time()[weekday[i]];
+				schedulePage[shift][i]->setContent(it->Name());
+			}
+		}
+	}
+	schedulePage.insertAbove(_state._menuPage);
+	schedulePage.insertLeft(shiftPanel);
+	schedulePage.beautifyGrid();
+	schedulePage.showContentFullGrid();
+	moveWithinGrid(schedulePage);
+}
+
+void Interface::exitPage() {
+
+}
+
+bool Interface::confirmExit() {
+
+}

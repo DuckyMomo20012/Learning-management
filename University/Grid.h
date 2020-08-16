@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Point.h"
 using namespace std;
+
 class Grid {
 private:
 	int _row, _col, _rowGap, _colGap;
@@ -12,7 +13,7 @@ public:
 	Grid(int row, int col) : _row(row), _col(col), _rowGap(1), _colGap(1) {}
 	Grid(int row, int col, int rowGap, int colGap) : _row(row), _col(col), _rowGap(rowGap), _colGap(colGap) {}
 	Grid(const Grid& other);
-	//~Grid();  Ko can thiet
+	~Grid();
 	Grid& operator= (const Grid& other);
 public:
 	int Row() { return _row; }
@@ -30,7 +31,7 @@ public:
 		return _grid[i];
 	}
 	void createGrid();
-	void createGrid(Point root);
+	void createGrid(Point gridCoordinate);
 	void beautifyGrid();
 	void insertLeft(const Grid& other);
 	void insertRight(const Grid& other);

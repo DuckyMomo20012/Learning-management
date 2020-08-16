@@ -2,6 +2,6 @@
 
 int main() {
 	Interface i;
-	i.drawInfoPanel("19127631");
+	i.loginPage();
 	return 0;
 }

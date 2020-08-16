@@ -2,19 +2,15 @@
 #include <iostream>
 #include "Course.h"
 #include "json.hpp"
-#include "Support/Address.h"
-#include "Support/Date.h"
 using namespace std;
 
 using json = nlohmann::json;
 
 class Person {
 private:
-	string _id, _name, _tel, _email;
-	Address _address;
-	Date _DOB;
+	string _id, _name, _tel, _email,  _address, _dob;
 public:
-	Person() : _id(""), _name(""), _tel(""), _email("") {};
+	Person() : _id(""), _name(""), _tel(""), _email(""), _address(""), _dob("") {};
 	Person(const json& info);
 public:
 	string Id() { return _id; }
@@ -25,15 +21,15 @@ public:
 	void setTel(string value) { _tel = value; }
 	string Email() { return _email; }
 	void setEmail(string value) { _email = value; }
-	Address getAddress() { return _address; }
-	void setAddress(Address value) { _address = value; }
-	Date DOB() { return _DOB; }
-	void setDOB(Date value) { _DOB = value; }
+	string getAddress() { return _address; }
+	void setAddress(string value) { _address = value; }
+	string DOB() { return _dob; }
+	void setDOB(string value) { _dob = value; }
 };
 
 class Student : public Person {
 private:
-	string _schoolYear, _department; // department: khoa
+	string _schoolYear, _department;
 	vector<Course*> _course;
 public:
 	Student() : Person(), _schoolYear(""), _department("") {};
@@ -47,12 +43,12 @@ public:
 		}
 	}
 	Student(Student& other);
+	Student& operator= (Student& other);
 	~Student() {
 		for (auto it : _course) {
 			delete it;
 		}
 	}
-
 public:
 	string SchoolYear() { return _schoolYear; }
 	void setSchoolYear(string value) { _schoolYear = value; }
@@ -60,12 +56,4 @@ public:
 	void setDepartment(string value) { _department = value; }
 	vector<Course*> getCourse() { return _course; }
 	void setCourse(vector<Course*> value) { _course = value; }
-public:
-
-};
-
-class Prof : public Person {
-public:
-	Prof() : Person() {}
-	Prof(const json& info) : Person(info) {};
 };

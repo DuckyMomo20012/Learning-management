@@ -23,7 +23,7 @@ void Interface::resizeConsole(int width, int height) {
 	MoveWindow(console, r.left, r.top, width, height, TRUE);
 }
 
-bool Interface::moveWithinGrid(Grid& _grid) {
+bool Interface::moveWithinGridAndExecuteFunction(Grid& _grid) {
 	unsigned row = 0, col = 0;
 	//goTo(_grid[row][col]->X() - 1, _grid[row][col]->Y());
 	_grid[0][0]->setPointerTo();
@@ -64,7 +64,10 @@ bool Interface::moveWithinGrid(Grid& _grid) {
 			break;
 		}
 		case 27: {
-			flagContinue = false;
+			flagContinue = !confirmExit();
+			if (flagContinue == true) {
+				_grid[row][col]->setPointerTo();
+			}
 			break;
 		}
 		case 13: {
@@ -72,11 +75,54 @@ bool Interface::moveWithinGrid(Grid& _grid) {
 				(this->*_command[_grid[row][col]])();
 				_trackProgress.push_back(_grid[row][col]);
 			}
+			else if (_grid[row][col] == _state._menuPage[0][4]) {
+				flagContinue = !confirmExit();
+				if (flagContinue == true) _grid[row][col]->setPointerTo();
+			}
 			break;
 		}
 		}
 	}
 	return flagGoBack;
+}
+
+Point Interface::moveWithinGrid(Grid& _grid) {
+	unsigned row = 0, col = 0;
+	_grid[0][0]->setPointerTo();
+	bool flagContinue = true;
+	while (flagContinue) {
+		switch (toupper(_getch())) {
+		case 'W': {
+			if (row > 0 && _grid[row - 1].size() > col) {
+				_grid[--row][col]->setPointerTo();
+			}
+			break;
+		}
+		case 'S': {
+			if (row < (unsigned)_grid.Row() - 1 && _grid[row + 1].size() > col) {
+				_grid[++row][col]->setPointerTo();
+			}
+			break;
+		}
+		case 'A': {
+			if (col > 0) {
+				_grid[row][--col]->setPointerTo();
+			}
+			break;
+		}
+		case 'D': {
+			if (col < _grid[row].size() - 1) {
+				_grid[row][++col]->setPointerTo();
+			}
+			break;
+		}
+		case 13: {
+			flagContinue = false;
+			break;
+		}
+		}
+	}
+	return *_grid[row][col];
 }
 
 void Interface::loginPage() {
@@ -128,7 +174,7 @@ void Interface::menuPage() {
 	void (Interface:: * scheduleCommand)() = &Interface::schedulePage;
 	_command.insert(make_pair(_state._menuPage[0][1], scheduleCommand));
 	_state._menuPage.showContentFullGrid();
-	moveWithinGrid(_state._menuPage);
+	moveWithinGridAndExecuteFunction(_state._menuPage);
 }
 
 void Interface::infoPage() {
@@ -147,7 +193,7 @@ void Interface::infoPage() {
 		infoPage.insertAbove(_state._menuPage);
 		infoPage.beautifyGrid();
 		infoPage.showContentFullGrid();
-		flagContinue = moveWithinGrid(infoPage);
+		flagContinue = moveWithinGridAndExecuteFunction(infoPage);
 	}
 }
 
@@ -180,21 +226,25 @@ void Interface::schedulePage() {
 		schedulePage.insertLeft(shiftPanel);
 		schedulePage.beautifyGrid();
 		schedulePage.showContentFullGrid();
-		flagContinue = moveWithinGrid(schedulePage);
+		flagContinue = moveWithinGridAndExecuteFunction(schedulePage);
 	}
 }
 
-void Interface::exitPage() {
-
+bool Interface::confirmExit() {
+	Point warningTextCoordinate(2, 1);
+	warningTextCoordinate >> "Do you want to exit? ";
+	cout << warningTextCoordinate;
+	Point confirmGridCoordinate(25, 1);
+	Grid confirmGrid(1, 2, 1, 2);
+	confirmGrid.createGrid(confirmGridCoordinate);
+	confirmGrid[0][0]->setContent("Y");
+	confirmGrid[0][1]->setContent("N");
+	cout << *confirmGrid[0][0];
+	cout << *confirmGrid[0][1];
+	Point confirm = moveWithinGrid(confirmGrid);
+	warningTextCoordinate.clearPrintedContent();
+	confirmGrid[0][0]->clearPrintedContent();
+	confirmGrid[0][1]->clearPrintedContent();
+	if (*confirmGrid[0][0] == confirm) return true;
+	else return false;
 }
-
-//bool Interface::confirmExit() {
-//	Point warningTextCoordinate(2, 2);
-//	warningTextCoordinate.setContent("Do you want to exit? ");
-//	Point confirmGridCoordinate(22, 2);
-//	Grid confirmGrid(1, 2, 1, 2);
-//	confirmGrid.createGrid(confirmGridCoordinate);
-//	confirmGrid[0][0]->setContent("Y");
-//	confirmGrid[0][1]->setContent("N");
-//	return true;
-//}

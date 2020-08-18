@@ -34,12 +34,11 @@ public:
 	}
 public:
 	void resizeConsole(int width, int height);
-	bool moveWithinGrid(Grid& _grid);
-	//Point moveWithinGrid(Grid grid);
+	bool moveWithinGridAndExecuteFunction(Grid& _grid);
+	Point moveWithinGrid(Grid& grid);
 	void loginPage();
 	void menuPage();
 	void infoPage();
 	void schedulePage();
-	void exitPage();
 	bool confirmExit();
 };

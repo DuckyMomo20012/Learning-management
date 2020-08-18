@@ -80,3 +80,7 @@ ostream& operator<<(ostream& out, Point& object) {
 void Point::operator>> (string content) {
 	setContent(content);
 }
+
+bool Point::operator==(const Point& obj) {
+	return (_x == obj._x) && (_y == obj._y);
+}

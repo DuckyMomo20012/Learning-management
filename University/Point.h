@@ -31,4 +31,5 @@ public:
 	void clearPrintedContent();
 	friend ostream& operator<< (ostream& out, Point& object);
 	void operator>> (string content);
+	bool operator==(const Point& obj);
 };

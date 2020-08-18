@@ -23,12 +23,13 @@ void Interface::resizeConsole(int width, int height) {
 	MoveWindow(console, r.left, r.top, width, height, TRUE);
 }
 
-void Interface::moveWithinGrid(Grid& _grid) {
+bool Interface::moveWithinGrid(Grid& _grid) {
 	unsigned row = 0, col = 0;
 	//goTo(_grid[row][col]->X() - 1, _grid[row][col]->Y());
 	_grid[0][0]->setPointerTo();
-	bool flag = true;
-	while (flag) {
+	bool flagContinue = true;
+	bool flagGoBack = false;
+	while (flagContinue) {
 		switch (toupper(_getch())) {
 		case 'W': {
 			if (row > 0 && _grid[row - 1].size() > col) {
@@ -58,8 +59,12 @@ void Interface::moveWithinGrid(Grid& _grid) {
 			}
 			break;
 		}
+		case 8: {
+			flagGoBack = true;
+			break;
+		}
 		case 27: {
-			flag = false;
+			flagContinue = false;
 			break;
 		}
 		case 13: {
@@ -71,6 +76,7 @@ void Interface::moveWithinGrid(Grid& _grid) {
 		}
 		}
 	}
+	return flagGoBack;
 }
 
 void Interface::loginPage() {
@@ -111,11 +117,11 @@ void Interface::menuPage() {
 	_state._menuPage = Grid(1, 5, 2, 4);
 	Point menuPageCoordinate(2, 2);
 	_state._menuPage.createGrid(menuPageCoordinate);
-	_state._menuPage[0][0]->operator>> ("INFO");
-	_state._menuPage[0][1]->operator>> ("SCHEDULE");
-	_state._menuPage[0][2]->operator>> ("TRANSCRIPT");
-	_state._menuPage[0][3]->operator>> ("ENROLL");
-	_state._menuPage[0][4]->operator>> ("EXIT"); 
+	_state._menuPage[0][0]->setContent("INFO");
+	_state._menuPage[0][1]->setContent("SCHEDULE");
+	_state._menuPage[0][2]->setContent("TRANSCRIPT");
+	_state._menuPage[0][3]->setContent("ENROLL");
+	_state._menuPage[0][4]->setContent("EXIT"); 
 	_state._menuPage.beautifyGrid();
 	void (Interface:: * infoCommand)() = &Interface::infoPage;
 	_command.insert(make_pair(_state._menuPage[0][0], infoCommand));
@@ -126,56 +132,69 @@ void Interface::menuPage() {
 }
 
 void Interface::infoPage() {
-	system("cls");
-	Grid infoPage(6, 1, 2, 4);
-	Point infoPageCoordinate(3, 3);
-	infoPage.createGrid(infoPageCoordinate);
-	infoPage[0][0]->setContent("ID: " + _state._user->Id());
-	infoPage[1][0]->setContent("NAME: " + _state._user->Name());
-	infoPage[2][0]->setContent("D.O.B: " + _state._user->DOB());
-	infoPage[3][0]->setContent("TELEPHONE: " + _state._user->Tel());
-	infoPage[4][0]->setContent("EMAIL: " + _state._user->Email());
-	infoPage[5][0]->setContent("ADDRESS: " + _state._user->getAddress());
-	infoPage.insertAbove(_state._menuPage);
-	infoPage.beautifyGrid();
-	infoPage.showContentFullGrid();
-	moveWithinGrid(infoPage);
+	bool flagContinue = true;
+	while (flagContinue) {
+		system("cls");
+		Grid infoPage(6, 1, 2, 4);
+		Point infoPageCoordinate(3, 3);
+		infoPage.createGrid(infoPageCoordinate);
+		infoPage[0][0]->setContent("ID: " + _state._user->Id());
+		infoPage[1][0]->setContent("NAME: " + _state._user->Name());
+		infoPage[2][0]->setContent("D.O.B: " + _state._user->DOB());
+		infoPage[3][0]->setContent("TELEPHONE: " + _state._user->Tel());
+		infoPage[4][0]->setContent("EMAIL: " + _state._user->Email());
+		infoPage[5][0]->setContent("ADDRESS: " + _state._user->getAddress());
+		infoPage.insertAbove(_state._menuPage);
+		infoPage.beautifyGrid();
+		infoPage.showContentFullGrid();
+		flagContinue = moveWithinGrid(infoPage);
+	}
 }
 
 void Interface::schedulePage() {
-	system("cls");
-	vector <string> weekday = { "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" };
-	Grid shiftPanel(4, 1, 2, 4);
-	Point root(2, 4);
-	shiftPanel.createGrid(root);
-	shiftPanel[0][0]->setContent("1");
-	shiftPanel[1][0]->setContent("2");
-	shiftPanel[2][0]->setContent("3");
-	shiftPanel[3][0]->setContent("4");
-	Grid schedulePage(5, 5, 2, 2);
-	Point root2(4, 3);
-	schedulePage.createGrid(root2);
-	for (int i = 0; i < 5; i++) {
-		schedulePage[0][i]->setContent(weekday[i]);
-		for (auto it : _state._user->getCourse()) {
-			map<string, int> time = it->Time();
-			if (time.find(weekday[i]) != time.end()) {
-				int shift = it->Time()[weekday[i]];
-				schedulePage[shift][i]->setContent(it->Name());
+	bool flagContinue = true;
+	while (flagContinue) {
+		system("cls");
+		vector <string> weekday = { "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" };
+		Grid shiftPanel(4, 1, 2, 4);
+		Point root(2, 4);
+		shiftPanel.createGrid(root);
+		shiftPanel[0][0]->setContent("1");
+		shiftPanel[1][0]->setContent("2");
+		shiftPanel[2][0]->setContent("3");
+		shiftPanel[3][0]->setContent("4");
+		Grid schedulePage(5, 5, 2, 2);
+		Point root2(4, 3);
+		schedulePage.createGrid(root2);
+		for (int i = 0; i < 5; i++) {
+			schedulePage[0][i]->setContent(weekday[i]);
+			for (auto it : _state._user->getCourse()) {
+				map<string, int> time = it->Time();
+				if (time.find(weekday[i]) != time.end()) {
+					int shift = it->Time()[weekday[i]];
+					schedulePage[shift][i]->setContent(it->Name());
+				}
 			}
 		}
+		schedulePage.insertAbove(_state._menuPage);
+		schedulePage.insertLeft(shiftPanel);
+		schedulePage.beautifyGrid();
+		schedulePage.showContentFullGrid();
+		flagContinue = moveWithinGrid(schedulePage);
 	}
-	schedulePage.insertAbove(_state._menuPage);
-	schedulePage.insertLeft(shiftPanel);
-	schedulePage.beautifyGrid();
-	schedulePage.showContentFullGrid();
-	moveWithinGrid(schedulePage);
 }
 
 void Interface::exitPage() {
 
 }
 
-bool Interface::confirmExit() {
-
-}
+//bool Interface::confirmExit() {
+//	Point warningTextCoordinate(2, 2);
+//	warningTextCoordinate.setContent("Do you want to exit? ");
+//	Point confirmGridCoordinate(22, 2);
+//	Grid confirmGrid(1, 2, 1, 2);
+//	confirmGrid.createGrid(confirmGridCoordinate);
+//	confirmGrid[0][0]->setContent("Y");
+//	confirmGrid[0][1]->setContent("N");
+//	return true;
+//}

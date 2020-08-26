@@ -26,7 +26,7 @@ public:
 class Interface {
 private:
 	State _state;
-	map<Point* , void (Interface::*)()> _command;
+	map<Point*, void (Interface::*)()> _command;
 	vector<Point*> _trackProgress;
 public:
 	Interface() {
@@ -38,7 +38,25 @@ public:
 	Point moveWithinGrid(Grid& grid);
 	void loginPage();
 	void menuPage();
+
 	void infoPage();
 	void schedulePage();
 	bool confirmExit();
+public:
+	void inputID();
+	void inputName();
+	void inputDOB();
+	void inputTelephone();
+	void inputEmail();
+	void inputAddress();
+	void backToEditPage();
+	void backToInfoPage();
+public:
+	void editPage();
+	void editIDPage();
+	void editNamePage();
+	void editDOBPage();
+	void editTelephonePage();
+	void editEmailPage();
+	void editAddressPage();
 };

@@ -140,7 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="Table.cpp" />
     <ClCompile Include="Interface.cpp" />
     <ClCompile Include="Course.cpp" />
     <ClCompile Include="Person.cpp" />
@@ -149,7 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Course.h" />
-    <ClInclude Include="Grid.h" />
+    <ClInclude Include="Table.h" />
     <ClInclude Include="Interface.h" />
     <ClInclude Include="Person.h" />
     <ClInclude Include="Point.h" />

@@ -1,6 +1,6 @@
-#include "Grid.h"
+#include "Table.h"
 
-Grid::Grid(const Grid& other) {
+Table::Table(const Table& other) {
 	_row = other._row;
 	_col = other._col;
 	_rowGap = other._rowGap;
@@ -16,7 +16,7 @@ Grid::Grid(const Grid& other) {
 	}
 }
 
-Grid& Grid::operator= (const Grid& other) {
+Table& Table::operator= (const Table& other) {
 	_row = other._row;
 	_col = other._col;
 	_rowGap = other._rowGap;
@@ -33,7 +33,7 @@ Grid& Grid::operator= (const Grid& other) {
 	return *this;
 }
 
-Grid::~Grid() {
+Table::~Table() {
 	for (auto it : _grid) {
 		for (auto it2 : it) {
 			delete it2;
@@ -41,7 +41,7 @@ Grid::~Grid() {
 	}
 }
 
-void Grid::createGrid() {
+void Table::createGrid() {
 	for (int i = 0, y = 0; i < _row; i++, y += _colGap) {
 		vector <Point*> _store;
 		for (int j = 0, x = 0; j < _col; j++, x += _rowGap) {
@@ -51,7 +51,7 @@ void Grid::createGrid() {
 	}
 }
 
-void Grid::createGrid(Point gridCoordinate) {
+void Table::createGrid(Point gridCoordinate) {
 	for (int i = 0, y = gridCoordinate.Y(); i < _row; i++, y += _rowGap) {
 		vector <Point*> _store;
 		for (int j = 0, x = gridCoordinate.X(); j < _col; j++, x += _colGap) {
@@ -61,7 +61,7 @@ void Grid::createGrid(Point gridCoordinate) {
 	}
 }
 
-void Grid::beautifyGrid() {
+void Table::beautifyGrid() {
 	for (unsigned i = 0; i < (unsigned)_col; i++) {
 		unsigned max_string = 0;
 		int max_x = 0;
@@ -84,8 +84,8 @@ void Grid::beautifyGrid() {
 	}
 }
 
-void Grid::insertLeft(const Grid& other) {
-	Grid* copy = new Grid(other);
+void Table::insertLeft(const Table& other) {
+	Table* copy = new Table(other);
 	if (_grid.size() > copy->_grid.size()) {
 		int delta = _grid.size() - copy->_grid.size();
 		for (int j = 0; j < delta; j++) { // them hang bi thieu
@@ -116,7 +116,7 @@ void Grid::insertLeft(const Grid& other) {
 	
 }
 
-void Grid::insertRight(const Grid& other){
+void Table::insertRight(const Table& other){
 	if (other._grid.size() > _grid.size()) {
 		int delta = other._grid.size() - _grid.size();
 		for (int j = 0; j < delta; j++) { // them hang bi thieu
@@ -136,7 +136,7 @@ void Grid::insertRight(const Grid& other){
 	_col += other._col;
 }
 
-void Grid::insertAbove(const Grid& other) {
+void Table::insertAbove(const Table& other) {
 	int row = _row;
 	int col = _col;
 	vector <vector <Point*>> copy = this->getGrid();
@@ -154,7 +154,7 @@ void Grid::insertAbove(const Grid& other) {
 	}
 }
 
-void Grid::insertBelow(const Grid& other) {
+void Table::insertBelow(const Table& other) {
 	for (unsigned i = 0; i < other._grid.size(); i++) {
 		_grid.push_back(other._grid[i]);
 		_row++;
@@ -162,7 +162,7 @@ void Grid::insertBelow(const Grid& other) {
 	if (other._col > _col) _col = other._col;
 }
 
-void Grid::showContentFullGrid() {
+void Table::showContentFullGrid() {
 	for (auto it : _grid) {
 		for (auto it2 : it) {
 			cout << *it2;

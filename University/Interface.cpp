@@ -32,31 +32,65 @@ bool Interface::moveWithinGridAndExecuteFunction(Grid& _grid) {
 	while (flagContinue) {
 		switch (toupper(_getch())) {
 		case 'W': {
-			if (row > 0 && _grid[row - 1].size() > col) {
-				//goTo(_grid[row - 1][col]->X() - 1, _grid[row - 1][col]->Y());
-				_grid[--row][col]->setPointerTo();
-			}
+			do
+			{
+				if (row > 0 && _grid[row - 1].size() > col) {
+					//goTo(_grid[row - 1][col]->X() - 1, _grid[row - 1][col]->Y());
+					_grid[--row][col]->setPointerTo();
+				}
+				else {
+					row = _grid.Row() - 1;
+					_grid[row][col]->setPointerTo();
+				}
+			} while (_grid[row][col]->Content() == "");
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 120);
 			break;
 		}
 		case 'S': {
-			if (row < (unsigned)_grid.Row() - 1 && _grid[row + 1].size() > col) {
-				//goTo(_grid[row + 1][col]->X() - 1, _grid[row + 1][col]->Y());
-				_grid[++row][col]->setPointerTo();
-			}
+			do
+			{
+				if (row < (unsigned)_grid.Row() - 1 && _grid[row + 1].size() > col) {
+					//goTo(_grid[row + 1][col]->X() - 1, _grid[row + 1][col]->Y());
+					_grid[++row][col]->setPointerTo();
+				}
+				else {
+					row = 0;
+					_grid[row][col]->setPointerTo();
+				}
+
+			} while (_grid[row][col]->Content() == "");
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 117);
 			break;
 		}
 		case 'A': {
-			if (col > 0) {
-				//goTo(_grid[row][col - 1]->X() - 1, _grid[row][col - 1]->Y());
-				_grid[row][--col]->setPointerTo();
-			}
+			do
+			{
+				if (col > 0) {
+					col--;
+					_grid[row][col]->setPointerTo();
+				}
+				else
+					if (col == 0) {
+						col = (unsigned)_grid[row].size() - 1;
+						_grid[row][col]->setPointerTo();
+					}
+			} while (_grid[row][col]->Content() == "");
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 117);
 			break;
 		}
 		case 'D': {
-			if (col < _grid[row].size() - 1) {
-				//goTo(_grid[row][col + 1]->X() - 1, _grid[row][col + 1]->Y());
-				_grid[row][++col]->setPointerTo();
-			}
+			do
+			{
+				if (col < _grid[row].size() - 1) {
+					_grid[row][++col]->setPointerTo();
+				}
+				else
+					if (col == _grid[row].size() - 1) {
+						col = 0;
+						_grid[row][col]->setPointerTo();
+					}
+			} while (_grid[row][col]->Content() == "");
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 120);
 			break;
 		}
 		case 8: {
@@ -93,27 +127,60 @@ Point Interface::moveWithinGrid(Grid& _grid) {
 	while (flagContinue) {
 		switch (toupper(_getch())) {
 		case 'W': {
-			if (row > 0 && _grid[row - 1].size() > col) {
-				_grid[--row][col]->setPointerTo();
-			}
+			do
+			{
+				if (row > 0 && _grid[row - 1].size() > col) {
+					_grid[--row][col]->setPointerTo();
+				}
+				else if (row == 0 || row < 0) {
+					row = _grid.Row() - 1;
+					_grid[row][col]->setPointerTo();
+				}
+			} while (_grid[row][col]->Content() == "");
+
 			break;
 		}
 		case 'S': {
-			if (row < (unsigned)_grid.Row() - 1 && _grid[row + 1].size() > col) {
-				_grid[++row][col]->setPointerTo();
-			}
+			do
+			{
+				if (row < (unsigned)_grid.Row() - 1 && _grid[row + 1].size() > col) {
+					_grid[++row][col]->setPointerTo();
+				}
+				else {
+					row = 0;
+					_grid[row][col]->setPointerTo();
+				}
+			} while (_grid[row][col]->Content() == "");
 			break;
 		}
 		case 'A': {
-			if (col > 0) {
-				_grid[row][--col]->setPointerTo();
-			}
+			do
+			{
+				if (col > 0) {
+					col--;
+					_grid[row][col]->setPointerTo();
+				}
+				else
+					if (col == 0) {
+						col = (unsigned)_grid[row].size() - 1;
+						_grid[row][col]->setPointerTo();
+					}
+
+			} while (_grid[row][col]->Content() == "");
 			break;
 		}
 		case 'D': {
-			if (col < _grid[row].size() - 1) {
-				_grid[row][++col]->setPointerTo();
-			}
+			do
+			{
+				if (col < _grid[row].size() - 1) {
+					_grid[row][++col]->setPointerTo();
+				}
+				else
+					if (col == _grid[row].size() - 1) {
+						col = 0;
+						_grid[row][col]->setPointerTo();
+					}
+			} while (_grid[row][col]->Content() == "");
 			break;
 		}
 		case 13: {
@@ -167,7 +234,7 @@ void Interface::menuPage() {
 	_state._menuPage[0][1]->setContent("SCHEDULE");
 	_state._menuPage[0][2]->setContent("TRANSCRIPT");
 	_state._menuPage[0][3]->setContent("ENROLL");
-	_state._menuPage[0][4]->setContent("EXIT"); 
+	_state._menuPage[0][4]->setContent("EXIT");
 	_state._menuPage.beautifyGrid();
 	void (Interface:: * infoCommand)() = &Interface::infoPage;
 	_command.insert(make_pair(_state._menuPage[0][0], infoCommand));

@@ -7,11 +7,20 @@ using namespace std;
 class Table {
 private:
 	int _row, _col, _rowGap, _colGap;
-	vector< vector<Point*>> _grid;
+	vector< vector<Point*>> _table;
+	Point* _root;
 public:
-	Table() : _row(1), _col(1), _rowGap(1), _colGap(1) {}
-	Table(int row, int col) : _row(row), _col(col), _rowGap(1), _colGap(1) {}
-	Table(int row, int col, int rowGap, int colGap) : _row(row), _col(col), _rowGap(rowGap), _colGap(colGap) {}
+	Table() : _root(new Point(0, 0)), _row(1), _col(1), _rowGap(1), _colGap(1) {
+		createTable(_root);
+	}
+	Table(int xRoot, int yRoot, int row, int col) : _root(new Point(xRoot, yRoot)), _row(row), _col(col), _rowGap(1), _colGap(1) {
+		createTable(_root);
+	}
+	Table(int xRoot, int yRoot, int row, int col, int rowGap, int colGap) : _root(new Point(xRoot, yRoot)),
+		_row(row), _col(col), _rowGap(rowGap), _colGap(colGap) 
+	{
+		createTable(_root);
+	}
 	Table(const Table& other);
 	~Table();
 	Table& operator= (const Table& other);
@@ -24,18 +33,19 @@ public:
 	void setRowGap(int value) { _rowGap = value; }
 	int ColGap() { return _colGap; }
 	void setColGap(int value) { _colGap = value; }
-	vector <vector<Point*>> getGrid() { return _grid; }
-	void setGrid(vector<vector<Point*>> value) { _grid = value; }
+	vector <vector<Point*>> getTable() { return _table; }
+	void setTable(vector<vector<Point*>> value) { _table = value; }
 public:
-	vector <Point*>& operator[] (int i) {
-		return _grid[i];
-	}
-	void createGrid();
-	void createGrid(Point gridCoordinate);
-	void beautifyGrid();
+	//vector <Point*>& operator[] (int i) {
+	//	return _table[i];
+	//}
+	void createTable();
+	void createTable(Point* tableCoordinate);
+	void beautifyTable();
 	void insertLeft(const Table& other);
 	void insertRight(const Table& other);
 	void insertAbove(const Table& other);
 	void insertBelow(const Table& other);
-	void showContentFullGrid();
+	void showTableContent();
+	Point* moveWithinTable();
 };

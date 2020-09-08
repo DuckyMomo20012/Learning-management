@@ -2,6 +2,8 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <set>
+#include <list>
 #include "Person.h"
 #include "Course.h"
 #include "Table.h"
@@ -10,83 +12,108 @@
 using namespace std;
 
 using json = nlohmann::json;
-//class Memento {
-//public:
-//	virtual void restore() = 0;
-//};
-//
-//class Originator {
-//public:
-//	virtual Memento* save() = 0;
-//};
-//
-//class IPage : public Originator {
-//private:
-//	Person* _client;
-//	Table* _table;
-//	map<Point*, void (IPage::*)()> _functions;
-//public:
-//	IPage(const IPage& other);
-//	~IPage();
-//public:
-//	//void virtual setPageFunctions() = 0;
-//public:
-//	IPage& operator= (const IPage& other);
-//	Person* Client() { return _client; }
-//	void setClient(Person* client) { _client = client; }
-//	Table* getTable() { return _table; }
-//	void setTable(Table* table) { _table = table; }
-//public:
-//	Memento* save();
-//};
-//
-//class IPageMemento : public Memento {
-//private:
-//	IPage orriginator;
-//	Person* _client;
-//	Table* _table;
-//	map<Point*, void (IPage::*)()> _functions;
-//public:
-//	IPageMemento(Person* client, Table* table, map<Point*, void (IPage::*)()> functions)
-//		: _client(client), _table(table), _functions(functions) {}
-//	void restore() {
-//
-//	}
-//	void foo();
-//};
-//
-//class InfoPage : public IPage {
-//
-//};
 
 class State {
 private:
 	Student* _user;
-	Table _menuPage;
-	friend class Interface;
+	Table* _menuTable;
+	bool _exitFlag;
 public:
-	State() : _user(), _menuPage() {}
+	State() : _user(), _exitFlag(false), _menuTable(new Table(3, 3, 1, 5, 2, 4)) {
+		initializeMenuTable();
+	}
 	~State();
-	State(const State& other);
+	State(const State& other) : _user(), _exitFlag(false), _menuTable(new Table(3, 3, 1, 5, 2, 4)) {
+		initializeMenuTable();
+	}
 	State& operator= (const State& other);
+public:	
+	void setStudent(Student* user) { _user = user; }
+	Student* User() { return _user; }
+	void initializeMenuTable();
+	Table* getMenuTable() { return _menuTable; }
+	void setExitFlag(bool value) { _exitFlag = value; }
+	bool ExitFlag() { return _exitFlag; }
 };
+
+class IPage {
+private:
+	State* _state;
+	Table* _table;
+public:
+	IPage(State* state) : _state(state), _table() {}
+public:
+	State* getStateIPage() { return _state; }
+	void setStateIPage(State* other) { _state = other; }
+	Table* getIPageTable() { return _table; }
+	void setIPageTable(Table* table) { _table = table; }
+public:
+	virtual void initializePage() = 0;
+	virtual void executeFunction(Point* locate) = 0;
+};
+
+class Caretaker {
+private:
+	list<IPage*> _history;
+public:
+	IPage* getCurrentPage() { return _history.back(); }
+	IPage* getMainPage() { return _history.front(); }
+	void push_back(IPage* other) { _history.push_back(other); }
+};
+
+class MainPage : public IPage {
+public:
+	MainPage(State* state) : IPage(state) {
+		initializePage();
+	}
+public:
+	void initializePage() override;
+	void executeFunction(Point* locate) override;
+};
+
+class InfoPage : public IPage {
+public:
+	InfoPage(State* state) : IPage(state) {
+		initializePage();
+	}
+public:
+	void initializePage() override;
+	void executeFunction(Point* locate) override;
+};
+
+class SchedulePage : public IPage {
+public:
+	SchedulePage(State* state) : IPage(state) {
+		initializePage();
+	}
+public:
+	void initializePage() override;
+	void executeFunction(Point* locate) override;
+};
+
+class Factory {
+public:
+	static IPage* clone(Point* locate, State* state);
+};
+
 
 class Interface {
 private:
-	State _state;
-	map<Point*, void (Interface::*)()> _command;
-	vector<Point*> _trackProgress;
+	State* _state;
+	Caretaker _care;
 public:
-	Interface() {
+	Interface() : _state() {
 		resizeConsole(900, 500);
 	}
 public:
+	State* getState() { return _state; }
+	void setState(State* value) { _state = value; }
+	Caretaker getCare() { return _care; }
+	void setCare(Caretaker& value) { _care = value; }
+public:
 	void resizeConsole(int width, int height);
-	void moveWithinGridAndExecuteFunction(Table& _grid);
-	Point moveWithinGrid(Table& grid);
-	void loginPage();
-	void menuPage();
-	void infoPage();
-	void schedulePage();
-	bool confirmExit();
+	void Login();
+	static bool Exit();
+	void run();
+	void pushBackNewPage(IPage* newPage) { _care.push_back(newPage); }
 };

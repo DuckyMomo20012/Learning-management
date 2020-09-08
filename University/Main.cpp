@@ -2,6 +2,6 @@
 
 int main() {
 	Interface i;
-	i.loginPage();
+	i.run();
 	return 0;
 }

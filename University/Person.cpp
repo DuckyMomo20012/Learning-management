@@ -3,7 +3,7 @@
 Person::Person(const json& info) {
 	setId(info["id"]);
 	setName(info["name"]);
-	setTel(info["tel"]);
+	setTelephone(info["tel"]);
 	setEmail(info["email"]);
 	setAddress(info["address"]);
 	setDOB(info["dob"]);
@@ -12,7 +12,7 @@ Person::Person(const json& info) {
 Student::Student(Student& other) {
 	setId(other.Id());
 	setName(other.Name());
-	setTel(other.Tel());
+	setTelephone(other.Telephone());
 	setEmail(other.Email());
 	setAddress(other.getAddress());
 	setDOB(other.DOB());
@@ -26,7 +26,7 @@ Student::Student(Student& other) {
 Student& Student::operator=(Student& other) {
 	setId(other.Id());
 	setName(other.Name());
-	setTel(other.Tel());
+	setTelephone(other.Telephone());
 	setEmail(other.Email());
 	setAddress(other.getAddress());
 	setDOB(other.DOB());

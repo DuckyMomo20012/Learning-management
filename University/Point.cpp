@@ -35,8 +35,8 @@ void Point::setPointerTo() {
 	goTo(_x - 1, _y);
 }
 
-string Point::controlConsoleInput(unsigned max_size) {
-	goTo(_x, _y);
+string Point::controlConsoleInput(unsigned ignoreSpace, unsigned max_size) {
+	goTo(_x + ignoreSpace, _y);
 	while (1) {
 		char type = _getch();
 		if ((_content.size() <= max_size /* Check co bo dau "=" ko*/) && ((type >= 48 && type <= 57) || (type >= 64 && type <= 90) || (type >= 97 && type <= 122))) {

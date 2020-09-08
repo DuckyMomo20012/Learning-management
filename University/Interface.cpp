@@ -29,7 +29,7 @@ void MainPage::initializePage() {
 void MainPage::executeFunction(Point* locate) {
 	if (locate->X() == 0 && locate->Y() == getIPageTable()->Col() - 1) {
 		State* tempState = getStateIPage();
-		tempState->setExitFlag(Interface::Exit());
+		tempState->setExitFlag(Interface::YesNoQuestionBox(new Point(2, 2), "Do u want to exit?"));
 		setStateIPage(tempState);
 	}
 }
@@ -40,7 +40,7 @@ void InfoPage::initializePage() {
 	infoPage->getTable()[0][0]->setContent("ID: " + getStateIPage()->User()->Id());
 	infoPage->getTable()[1][0]->setContent("NAME: " + getStateIPage()->User()->Name());
 	infoPage->getTable()[2][0]->setContent("D.O.B: " + getStateIPage()->User()->DOB());
-	infoPage->getTable()[3][0]->setContent("TELEPHONE: " + getStateIPage()->User()->Tel());
+	infoPage->getTable()[3][0]->setContent("TELEPHONE: " + getStateIPage()->User()->Telephone());
 	infoPage->getTable()[4][0]->setContent("EMAIL: " + getStateIPage()->User()->Email());
 	infoPage->getTable()[5][0]->setContent("ADDRESS: " + getStateIPage()->User()->getAddress());
 	infoPage->insertAbove(*getStateIPage()->getMenuTable());
@@ -51,9 +51,68 @@ void InfoPage::initializePage() {
 void InfoPage::executeFunction(Point* locate) {
 	if (locate->X() == 0 && locate->Y() == getIPageTable()->Col() - 1) {
 		State* tempState = getStateIPage();
-		tempState->setExitFlag(Interface::Exit());
+		tempState->setExitFlag(Interface::YesNoQuestionBox(new Point(2, 2), "Do u want to exit?"));
 		setStateIPage(tempState);
 	}
+	else if (locate->X() == 2 && locate->Y() == 0) {
+		State* tempState = getStateIPage();
+		string editString = edit(getIPageTable()->getTable()[locate->X()][locate->Y()], "NAME: ");
+		if (editString != "") {
+			tempState->User()->setName(editString);
+		}
+		setStateIPage(tempState);
+	}
+	else if (locate->X() == 3 && locate->Y() == 0) {
+		State* tempState = getStateIPage();
+		string editString = edit(getIPageTable()->getTable()[locate->X()][locate->Y()], "D.O.B: ");
+		if (editString != "") {
+			tempState->User()->setDOB(editString);
+		}
+		setStateIPage(tempState);
+	}
+	else if (locate->X() == 4 && locate->Y() == 0) {
+		State* tempState = getStateIPage();
+		string editString = edit(getIPageTable()->getTable()[locate->X()][locate->Y()], "TELEPHONE: ");
+		if (editString != "") {
+			tempState->User()->setTelephone(editString);
+		}
+		setStateIPage(tempState);
+	}
+	else if (locate->X() == 5 && locate->Y() == 0) {
+		State* tempState = getStateIPage();
+		string editString = edit(getIPageTable()->getTable()[locate->X()][locate->Y()], "EMAIL: ");
+		if (editString != "") {
+			tempState->User()->setEmail(editString);
+		}
+		setStateIPage(tempState);
+	}
+	else if (locate->X() == 2 && locate->Y() == 0) {
+		State* tempState = getStateIPage();
+		string editString = edit(getIPageTable()->getTable()[locate->X()][locate->Y()], "ADDRESS: ");
+		if (editString != "") {
+			tempState->User()->setAddress(editString);
+		}
+		setStateIPage(tempState);
+	}
+}
+
+string InfoPage::edit(Point* locate, string ignoreString) {
+	string editString;
+	bool confirmChange = false;
+	Point copy = *locate;
+	copy.clearPrintedContent();
+	copy.setContent(ignoreString);
+	cout << copy;
+	Point* editBox = new Point(copy.X() + copy.Content().size(), copy.Y());
+	editString = editBox->controlConsoleInput(0, 20);
+	Point* confirmBox = new Point(editBox->X() + editString.size() + 1 /*Khoang cach giua edit va confirm*/, copy.Y());
+	confirmChange = Interface::YesNoQuestionBox(confirmBox, "Confirm? ");
+	if (confirmChange == false) {
+		cout << *locate;
+		editString = "";
+	}
+	return editString;
+	delete editBox, confirmBox;
 }
 
 void SchedulePage::initializePage() {
@@ -83,7 +142,7 @@ void SchedulePage::initializePage() {
 void SchedulePage::executeFunction(Point* locate) {
 	if (locate->X() == 0 && locate->Y() == getIPageTable()->getTable()[0].size() - 1) {
 		State* tempState = getStateIPage();
-		tempState->setExitFlag(Interface::Exit());
+		tempState->setExitFlag(Interface::YesNoQuestionBox(new Point(2, 2), "Do u want to exit?"));
 		setStateIPage(tempState);
 	}
 }
@@ -115,7 +174,7 @@ void Interface::resizeConsole(int width, int height) {
 	MoveWindow(console, r.left, r.top, width, height, TRUE);
 }
 
-void Interface::Login() {
+void Interface::login() {
 	Point textBox(20, 10);
 	Point loginTextBox(29, 10);
 	Point errorTextBox(29, 11);
@@ -128,7 +187,7 @@ void Interface::Login() {
 		json allStudent = json::array();
 		file >> allStudent;
 		while (flag == false) {
-			string id = loginTextBox.controlConsoleInput(20);
+			string id = loginTextBox.controlConsoleInput(0, 20);
 			for (unsigned i = 0; i < allStudent.size(); i++) {
 				if (allStudent[i]["id"] == id) {
 					flag = true;
@@ -150,18 +209,16 @@ void Interface::Login() {
 	system("cls");
 }
 
-bool Interface::Exit() {
-	Point warningTextCoordinate(2, 1);
-	warningTextCoordinate >> "Do you want to exit? ";
-	cout << warningTextCoordinate;
-	Point confirmTableCoordinate(25, 1);
-	Table confirmTable(2, 2, 1, 2, 1, 2);
+bool Interface::YesNoQuestionBox(Point* locate, string sentence) {
+	locate->setContent(sentence + " ");
+	cout << *locate;
+	Table confirmTable(locate->X() + locate->Content().size(), locate->Y(), 1, 2, 1, 2);
 	confirmTable.getTable()[0][0]->setContent("Y");
 	confirmTable.getTable()[0][1]->setContent("N");
 	cout << *confirmTable.getTable()[0][0];
 	cout << *confirmTable.getTable()[0][1];
 	Point* confirm = confirmTable.moveWithinTable();
-	warningTextCoordinate.clearPrintedContent();
+	locate->clearPrintedContent();
 	confirmTable.getTable()[0][0]->clearPrintedContent();
 	confirmTable.getTable()[0][1]->clearPrintedContent();
 	if (0 == confirm->Y()) return true;
@@ -169,8 +226,7 @@ bool Interface::Exit() {
 }
 
 void Interface::run() {
-	Login();
-	State* temp = getState();
+	login();
 	pushBackNewPage(new MainPage(getState()));
 	while (getState()->ExitFlag() == false) {
 		system("cls");
@@ -182,4 +238,5 @@ void Interface::run() {
 		}
 		else _care.getCurrentPage()->executeFunction(locate);
 	}
+	system("cls");
 }

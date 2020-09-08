@@ -17,8 +17,8 @@ public:
 	void setId(string value) { _id = value; }
 	string Name() { return _name; }
 	void setName(string value) { _name = value; }
-	string Tel() { return _tel; }
-	void setTel(string value) { _tel = value; }
+	string Telephone() { return _tel; }
+	void setTelephone(string value) { _tel = value; }
 	string Email() { return _email; }
 	void setEmail(string value) { _email = value; }
 	string getAddress() { return _address; }

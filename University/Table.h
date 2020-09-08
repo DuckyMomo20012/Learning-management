@@ -21,6 +21,9 @@ public:
 	{
 		createTable(_root);
 	}
+	Table(Point* root, int row, int col, int rowGap, int colGap) : _root(root), _row(row), _col(col), _rowGap(rowGap), _colGap(colGap) {
+		createTable(_root);
+	}
 	Table(const Table& other);
 	~Table();
 	Table& operator= (const Table& other);
@@ -36,9 +39,6 @@ public:
 	vector <vector<Point*>> getTable() { return _table; }
 	void setTable(vector<vector<Point*>> value) { _table = value; }
 public:
-	//vector <Point*>& operator[] (int i) {
-	//	return _table[i];
-	//}
 	void createTable();
 	void createTable(Point* tableCoordinate);
 	void beautifyTable();

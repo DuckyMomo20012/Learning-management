@@ -8,7 +8,6 @@
 #include "Course.h"
 #include "Table.h"
 #include "json.hpp"
-#include "Support/Tokenizer.h"
 using namespace std;
 
 using json = nlohmann::json;
@@ -79,6 +78,8 @@ public:
 public:
 	void initializePage() override;
 	void executeFunction(Point* locate) override;
+public:
+	string edit(Point* locate, string ignoreString);
 };
 
 class SchedulePage : public IPage {
@@ -112,8 +113,8 @@ public:
 	void setCare(Caretaker& value) { _care = value; }
 public:
 	void resizeConsole(int width, int height);
-	void Login();
-	static bool Exit();
+	void login();
+	static bool YesNoQuestionBox(Point* locate, string sentence);
 	void run();
 	void pushBackNewPage(IPage* newPage) { _care.push_back(newPage); }
 };

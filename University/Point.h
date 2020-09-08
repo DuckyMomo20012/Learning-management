@@ -27,7 +27,7 @@ public:
 	void static goTo(int x, int y);
 	void goTo();
 	void setPointerTo();
-	string controlConsoleInput(unsigned max_size);
+	string controlConsoleInput(unsigned ignoreSpace, unsigned max_size);
 	void clearPrintedContent();
 	friend ostream& operator<< (ostream& out, Point& object);
 	void operator>> (string content);

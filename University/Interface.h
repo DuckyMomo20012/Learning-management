@@ -17,14 +17,15 @@ private:
 	Student* _user;
 	Table* _menuTable;
 	bool _exitFlag;
+	bool _goBackFlag;
 public:
-	State() : _user(), _exitFlag(false), _menuTable(new Table(3, 3, 1, 5, 2, 4)) {
+	State() : _user(), _exitFlag(false), _goBackFlag(false), _menuTable(new Table(3, 3, 1, 5, 2, 4)) {
 		initializeMenuTable();
 	}
+	State(const State& other) : _user(), _exitFlag(false), _goBackFlag(false), _menuTable(new Table(3, 3, 1, 5, 2, 4)) {
+		initializeMenuTable();
+	}	
 	~State();
-	State(const State& other) : _user(), _exitFlag(false), _menuTable(new Table(3, 3, 1, 5, 2, 4)) {
-		initializeMenuTable();
-	}
 	State& operator= (const State& other);
 public:	
 	void setStudent(Student* user) { _user = user; }
@@ -33,6 +34,8 @@ public:
 	Table* getMenuTable() { return _menuTable; }
 	void setExitFlag(bool value) { _exitFlag = value; }
 	bool ExitFlag() { return _exitFlag; }
+	void setGoBackFlag(bool value) { _goBackFlag = value; }
+	bool GoBackFlag() { return _goBackFlag; }
 };
 
 class IPage {
@@ -49,15 +52,6 @@ public:
 public:
 	virtual void initializePage() = 0;
 	virtual void executeFunction(Point* locate) = 0;
-};
-
-class Caretaker {
-private:
-	list<IPage*> _history;
-public:
-	IPage* getCurrentPage() { return _history.back(); }
-	IPage* getMainPage() { return _history.front(); }
-	void push_back(IPage* other) { _history.push_back(other); }
 };
 
 class MainPage : public IPage {
@@ -79,7 +73,7 @@ public:
 	void initializePage() override;
 	void executeFunction(Point* locate) override;
 public:
-	string edit(Point* locate, string ignoreString);
+	string edit(Point*& locate, string ignoreString);
 };
 
 class SchedulePage : public IPage {
@@ -97,6 +91,15 @@ public:
 	static IPage* clone(Point* locate, State* state);
 };
 
+class Caretaker {
+private:
+	list<IPage*> _history;
+public:
+	IPage* getCurrentPage() { return _history.back(); }
+	IPage* getMainPage() { return _history.front(); }
+	void push_back(IPage* other);
+	void pop_back();
+};
 
 class Interface {
 private:
@@ -116,5 +119,4 @@ public:
 	void login();
 	static bool YesNoQuestionBox(Point* locate, string sentence);
 	void run();
-	void pushBackNewPage(IPage* newPage) { _care.push_back(newPage); }
 };

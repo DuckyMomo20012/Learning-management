@@ -36,23 +36,22 @@ void Point::setPointerTo() {
 }
 
 string Point::controlConsoleInput(unsigned ignoreSpace, unsigned max_size) {
-	goTo(_x + ignoreSpace, _y);
+	goTo(_x + ignoreSpace + _content.size(), _y);
 	while (1) {
 		char type = _getch();
-		if ((_content.size() <= max_size /* Check co bo dau "=" ko*/) && ((type >= 48 && type <= 57) || (type >= 64 && type <= 90) || (type >= 97 && type <= 122))) {
-			goTo(_x + _content.size(), _y);
+		if ((_content.size() < max_size) && (type >= 47 && type <= 122)) {
+			goTo(_x + ignoreSpace + _content.size(), _y);
 			cout << type;
 			_content.push_back(type);
 		}
 		else if (8 == type && _content.size() > 0) {
 			_content.pop_back();
-			goTo(_x + _content.size(), _y);
+			goTo(_x + ignoreSpace + _content.size(), _y);
 			cout << " ";
-			goTo(_x + _content.size(), _y);
+			goTo(_x + ignoreSpace + _content.size(), _y);
 		}
 		else if (27 == type) {
 			clearPrintedContent();
-			_content.clear();
 			break;
 		}
 		else if (13 == type) {
@@ -78,7 +77,7 @@ ostream& operator<<(ostream& out, Point& object) {
 }
 
 void Point::operator>> (string content) {
-	setContent(content);
+	_content = content;
 }
 
 bool Point::operator==(const Point& obj) {

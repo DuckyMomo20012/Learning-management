@@ -3,6 +3,7 @@
 State& State::operator= (const State& other) {
 	_user = other._user;
 	_exitFlag = other._exitFlag;
+	_goBackFlag = other._goBackFlag;
 	_menuTable = other._menuTable;
 	return *this;
 }
@@ -94,25 +95,38 @@ void InfoPage::executeFunction(Point* locate) {
 		}
 		setStateIPage(tempState);
 	}
+	else if (locate->X() == -1 && locate->Y() == -1) {
+		State* tempState = getStateIPage();
+		tempState->setGoBackFlag(true);
+		setStateIPage(tempState);
+	}
 }
 
-string InfoPage::edit(Point* locate, string ignoreString) {
+string InfoPage::edit(Point*& locate, string ignoreString) {
 	string editString;
 	bool confirmChange = false;
-	Point copy = *locate;
-	copy.clearPrintedContent();
-	copy.setContent(ignoreString);
-	cout << copy;
-	Point* editBox = new Point(copy.X() + copy.Content().size(), copy.Y());
+	string oldContent = locate->Content();
+	locate->clearPrintedContent();
+	locate->setContent(ignoreString);
+	cout << *locate;
+	Point* editBox = new Point(locate->X() + locate->Content().size(), locate->Y());
 	editString = editBox->controlConsoleInput(0, 20);
-	Point* confirmBox = new Point(editBox->X() + editString.size() + 1 /*Khoang cach giua edit va confirm*/, copy.Y());
-	confirmChange = Interface::YesNoQuestionBox(confirmBox, "Confirm? ");
+	Point* confirmBox = new Point(locate->X() + locate->Content().size() + editString.size() + 1 /*Khoang cach giua edit va confirm*/, locate->Y());
+	if (editString != "") {
+		confirmChange = Interface::YesNoQuestionBox(confirmBox, "Confirm? ");
+	}
 	if (confirmChange == false) {
+		editBox->clearPrintedContent();
+		locate->clearPrintedContent();
+		locate->setContent(oldContent);
 		cout << *locate;
 		editString = "";
 	}
+	else {
+		locate->setContent(ignoreString + editString);
+	}
+	delete confirmBox, editBox;
 	return editString;
-	delete editBox, confirmBox;
 }
 
 void SchedulePage::initializePage() {
@@ -145,6 +159,11 @@ void SchedulePage::executeFunction(Point* locate) {
 		tempState->setExitFlag(Interface::YesNoQuestionBox(new Point(2, 2), "Do u want to exit?"));
 		setStateIPage(tempState);
 	}
+	else if (locate->X() == -1 && locate->Y() == -1) {
+		State* tempState = getStateIPage();
+		tempState->setGoBackFlag(true);
+		setStateIPage(tempState);
+	}
 }
 
 IPage* Factory::clone(Point* locate, State* state) {
@@ -162,6 +181,15 @@ IPage* Factory::clone(Point* locate, State* state) {
 		// enroll page
 	}
 	return newPage;
+}
+
+void Caretaker::push_back(IPage* other) {
+	if (_history.empty())  _history.push_back(other);
+	else if (other != _history.back()) _history.push_back(other);
+}
+
+void Caretaker::pop_back() {
+	if (_history.size() > 1) _history.pop_back();
 }
 
 void Interface::resizeConsole(int width, int height) {
@@ -227,7 +255,7 @@ bool Interface::YesNoQuestionBox(Point* locate, string sentence) {
 
 void Interface::run() {
 	login();
-	pushBackNewPage(new MainPage(getState()));
+	_care.push_back(new MainPage(getState()));
 	while (getState()->ExitFlag() == false) {
 		system("cls");
 		getCare().getCurrentPage()->getIPageTable()->showTableContent();
@@ -237,6 +265,10 @@ void Interface::run() {
 			_care.push_back(newPage);
 		}
 		else _care.getCurrentPage()->executeFunction(locate);
+		if (getState()->GoBackFlag() == true) {
+			_care.pop_back();
+			getState()->setGoBackFlag(false);
+		}
 	}
 	system("cls");
 }

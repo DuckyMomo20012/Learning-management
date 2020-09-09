@@ -167,6 +167,7 @@ void Table::insertBelow(const Table& other) {
 }
 
 void Table::showTableContent() {
+	beautifyTable();
 	for (auto it : _table) {
 		for (auto it2 : it) {
 			cout << *it2;
@@ -207,6 +208,11 @@ Point* Table::moveWithinTable() {
 		case 13: {
 			flagContinue = false;
 			break;
+		}
+		case 8: {
+			row = -1;
+			col = -1;
+			flagContinue = false;
 		}
 		}
 	}

@@ -120,3 +120,4 @@ public:
 	static bool YesNoQuestionBox(Point* locate, string sentence);
 	void run();
 };
+//test commit

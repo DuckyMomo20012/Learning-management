@@ -153,10 +153,6 @@
     <ClInclude Include="Interface.h" />
     <ClInclude Include="Person.h" />
     <ClInclude Include="Point.h" />
-    <ClInclude Include="Support\Tokenizer.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="Support\MyLibrary.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

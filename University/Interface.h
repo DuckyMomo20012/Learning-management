@@ -86,6 +86,20 @@ public:
 	void executeFunction(Point* locate) override;
 };
 
+class EnrollPage : public IPage {
+private:
+	unsigned _totalSelection;
+public:
+	EnrollPage(State* state) : IPage(state), _totalSelection(0) {
+		initializePage();
+	}
+public:
+	void initializePage() override;
+	void executeFunction(Point* locate) override;
+public:
+	void getCourse();
+};
+
 class Factory {
 public:
 	static IPage* clone(Point* locate, State* state);

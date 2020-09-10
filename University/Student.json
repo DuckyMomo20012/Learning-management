@@ -16,11 +16,11 @@
         "time" : [
           {
               "weekday" : "MONDAY",
-              "shift" : 1
+              "shift" : [1, 2]
           },
           {
               "weekday" : "WEDNESDAY",
-              "shift" : 3
+              "shift" : [3, 4]
           }
         ]
       },
@@ -31,11 +31,11 @@
         "time" : [
           {
               "weekday" : "MONDAY",
-              "shift" : 2
+              "shift" : [3, 4]
           },
           {
               "weekday" : "THURSDAY",
-              "shift" : 4
+              "shift" : [1, 4]
           }
         ]
       }

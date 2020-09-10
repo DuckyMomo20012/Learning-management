@@ -23,8 +23,8 @@ void State::initializeMenuTable() {
 }
 
 void MainPage::initializePage() {
-	Table* test = getStateIPage()->getMenuTable();
-	setIPageTable(test);
+	Table* tempTable = getStateIPage()->getMenuTable();
+	setIPageTable(tempTable);
 }
 
 void MainPage::executeFunction(Point* locate) {
@@ -45,7 +45,6 @@ void InfoPage::initializePage() {
 	infoPage->getTable()[4][0]->setContent("EMAIL: " + getStateIPage()->User()->Email());
 	infoPage->getTable()[5][0]->setContent("ADDRESS: " + getStateIPage()->User()->getAddress());
 	infoPage->insertAbove(*getStateIPage()->getMenuTable());
-	infoPage->beautifyTable();
 	setIPageTable(infoPage);
 }
 
@@ -138,18 +137,19 @@ void SchedulePage::initializePage() {
 	schedulePage->getTable()[2][0]->setContent("2");
 	schedulePage->getTable()[3][0]->setContent("3");
 	schedulePage->getTable()[4][0]->setContent("4");
-	for (int i = 1; i < 6; i++) {
+	for (int i = 1; i < 6; i++) { // 6 ngay trong tuan
 		schedulePage->getTable()[0][i]->setContent(weekday[i - 1]);
 		for (auto it : getStateIPage()->User()->getCourse()) {
-			map<string, int> time = it->Time();
+			map<string, vector<int>> time = it->Time();
 			if (time.find(weekday[i - 1]) != time.end()) {
-				int shift = it->Time()[weekday[i - 1]];
-				schedulePage->getTable()[shift][i]->setContent(it->Name());
+				for (auto shiftAmount : time[weekday[i - 1]]) { // so ca hoc trong ngay
+					int shift = shiftAmount;
+					schedulePage->getTable()[shift][i]->setContent(it->Name());
+				}
 			}
 		}
 	}
 	schedulePage->insertAbove(*getStateIPage()->getMenuTable());
-	schedulePage->beautifyTable();
 	setIPageTable(schedulePage);
 }
 
@@ -164,6 +164,34 @@ void SchedulePage::executeFunction(Point* locate) {
 		tempState->setGoBackFlag(true);
 		setStateIPage(tempState);
 	}
+}
+
+void EnrollPage::initializePage() {
+	system("cls");
+}
+
+void EnrollPage::executeFunction(Point* locate) {
+	if (locate->X() == 0 && locate->Y() == getIPageTable()->Col() - 1) {
+		State* tempState = getStateIPage();
+		tempState->setExitFlag(Interface::YesNoQuestionBox(new Point(2, 2), "Do u want to exit?"));
+		setStateIPage(tempState);
+	}
+}
+
+void EnrollPage::getCourse() {
+	fstream file("Course.json", ios::in);
+	if (file.fail()) cout << "CANNOT OPEN FILE!!!";
+	else {
+		json arrayCourse = json::array();
+		file >> arrayCourse;
+		for (auto it : arrayCourse) {
+			for (auto it2 : arrayCourse["time"]) {
+				_totalSelection += it2["shift"].size();
+			}
+			
+		}
+	}
+	file.close();
 }
 
 IPage* Factory::clone(Point* locate, State* state) {

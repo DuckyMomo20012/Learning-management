@@ -10,7 +10,11 @@ Course::Course(const json& info) {
 	}
 	if (info["time"].size() > 0) {
 		for (auto it : info["time"]) {
-			_time.insert(make_pair(it["weekday"], it["shift"]));
+			vector <int> shiftAmount; //so ca hoc trong mot ngay
+			for (auto it2 : it["shift"]) {
+				shiftAmount.push_back(it2);
+			}
+			_time.insert(make_pair(it["weekday"], shiftAmount));
 		}
 	}
 }

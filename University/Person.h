@@ -56,4 +56,5 @@ public:
 	void setDepartment(string value) { _department = value; }
 	vector<Course*> getCourse() { return _course; }
 	void setCourse(vector<Course*> value) { _course = value; }
+	bool isEmptyCourse() { return _course.empty(); }
 };

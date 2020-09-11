@@ -166,6 +166,19 @@ void Table::insertBelow(const Table& other) {
 	if (other._col > _col) _col = other._col;
 }
 
+void Table::insertRowBelow(const vector<string>& values) {
+	vector <Point*> newRow;
+	int x = _table.empty() != true ? _table.back()[0]->X() : _root->X();
+	int y = _table.empty() != true ? _table.back()[0]->Y() : _root->Y();
+	int rowGap = _table.empty() != true ? _rowGap : 0;
+	for (auto it : values) {
+		newRow.push_back(new Point(x++, y + rowGap, it));
+	}
+	_row++;
+	_col = values.size();
+	_table.push_back(newRow);
+}
+
 void Table::showTableContent() {
 	beautifyTable();
 	for (auto it : _table) {

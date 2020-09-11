@@ -19,10 +19,10 @@ private:
 	bool _exitFlag;
 	bool _goBackFlag;
 public:
-	State() : _user(), _exitFlag(false), _goBackFlag(false), _menuTable(new Table(3, 3, 1, 5, 2, 4)) {
+	State() : _user(), _exitFlag(false), _goBackFlag(false), _menuTable(new Table(3, 3, 2, 4)) {
 		initializeMenuTable();
 	}
-	State(const State& other) : _user(), _exitFlag(false), _goBackFlag(false), _menuTable(new Table(3, 3, 1, 5, 2, 4)) {
+	State(const State& other) : _user(), _exitFlag(false), _goBackFlag(false), _menuTable(new Table(3, 3, 2, 4)) {
 		initializeMenuTable();
 	}	
 	~State();

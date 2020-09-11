@@ -7,21 +7,21 @@ using namespace std;
 class Table {
 private:
 	int _row, _col, _rowGap, _colGap;
-	vector< vector<Point*>> _table;
+	vector<vector<Point*>> _table;
 	Point* _root;
 public:
 	Table() : _root(new Point(0, 0)), _row(1), _col(1), _rowGap(1), _colGap(1) {
 		createTable(_root);
 	}
-	Table(int xRoot, int yRoot, int row, int col) : _root(new Point(xRoot, yRoot)), _row(row), _col(col), _rowGap(1), _colGap(1) {
+	Table(int xRoot, int yRoot, int rowGap, int colGap) : _root(new Point(xRoot, yRoot)), _rowGap(rowGap), _colGap(colGap), _row(0), _col(0) {
 		createTable(_root);
 	}
-	Table(int xRoot, int yRoot, int row, int col, int rowGap, int colGap) : _root(new Point(xRoot, yRoot)),
-		_row(row), _col(col), _rowGap(rowGap), _colGap(colGap) 
+	Table(int xRoot, int yRoot, int rowGap, int colGap, int row, int col) : _root(new Point(xRoot, yRoot)),
+		_rowGap(rowGap), _colGap(colGap), _row(row), _col(col)
 	{
 		createTable(_root);
 	}
-	Table(Point* root, int row, int col, int rowGap, int colGap) : _root(root), _row(row), _col(col), _rowGap(rowGap), _colGap(colGap) {
+	Table(Point* root, int rowGap, int colGap, int row, int col) : _root(root), _rowGap(rowGap), _colGap(colGap), _row(row), _col(col) {
 		createTable(_root);
 	}
 	Table(const Table& other);
@@ -46,6 +46,7 @@ public:
 	void insertRight(const Table& other);
 	void insertAbove(const Table& other);
 	void insertBelow(const Table& other);
+	void insertRowBelow(const vector<string>& values);
 	void showTableContent();
 	Point* moveWithinTable();
 };

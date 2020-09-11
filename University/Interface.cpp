@@ -14,12 +14,7 @@ State::~State() {
 }
 
 void State::initializeMenuTable() {
-	_menuTable->getTable()[0][0]->setContent("INFO");
-	_menuTable->getTable()[0][1]->setContent("SHCEDULE");
-	_menuTable->getTable()[0][2]->setContent("TRANSCRIPT");
-	_menuTable->getTable()[0][3]->setContent("ENROLL");
-	_menuTable->getTable()[0][4]->setContent("EXIT");
-	_menuTable->beautifyTable();
+	_menuTable->insertRowBelow({ "INFO", "SCHEDULE", "TRANSCRIPT", "ENROLL", "EXIT"});
 }
 
 void MainPage::initializePage() {
@@ -37,13 +32,13 @@ void MainPage::executeFunction(Point* locate) {
 
 void InfoPage::initializePage() {
 	system("cls");
-	Table* infoPage = new Table(3, 3, 6, 1, 2, 4);
-	infoPage->getTable()[0][0]->setContent("ID: " + getStateIPage()->User()->Id());
-	infoPage->getTable()[1][0]->setContent("NAME: " + getStateIPage()->User()->Name());
-	infoPage->getTable()[2][0]->setContent("D.O.B: " + getStateIPage()->User()->DOB());
-	infoPage->getTable()[3][0]->setContent("TELEPHONE: " + getStateIPage()->User()->Telephone());
-	infoPage->getTable()[4][0]->setContent("EMAIL: " + getStateIPage()->User()->Email());
-	infoPage->getTable()[5][0]->setContent("ADDRESS: " + getStateIPage()->User()->getAddress());
+	Table* infoPage = new Table(3, 3, 2, 4);
+	infoPage->insertRowBelow({ "ID: " + getStateIPage()->User()->Id() });
+	infoPage->insertRowBelow({ "NAME: " + getStateIPage()->User()->Name() });
+	infoPage->insertRowBelow({ "D.O.B: " + getStateIPage()->User()->DOB() });
+	infoPage->insertRowBelow({ "TELEPHONE: " + getStateIPage()->User()->Telephone() });
+	infoPage->insertRowBelow({ "EMAIL: " + getStateIPage()->User()->Email() });
+	infoPage->insertRowBelow({ "ADDRESS: " + getStateIPage()->User()->getAddress() });
 	infoPage->insertAbove(*getStateIPage()->getMenuTable());
 	setIPageTable(infoPage);
 }
@@ -131,7 +126,7 @@ string InfoPage::edit(Point*& locate, string ignoreString) {
 void SchedulePage::initializePage() {
 	system("cls");
 	vector <string> weekday = { "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" };
-	Table* schedulePage(new Table(3, 3, 5, 6, 2, 2));
+	Table* schedulePage(new Table(3, 3, 2, 2, 5, 6));
 	schedulePage->getTable()[0][0]->setContent("SHIFT");
 	schedulePage->getTable()[1][0]->setContent("1");
 	schedulePage->getTable()[2][0]->setContent("2");

@@ -1,5 +1,4 @@
 #include "Interface.h"
-
 State& State::operator= (const State& other) {
 	_user = other._user;
 	_exitFlag = other._exitFlag;
@@ -165,6 +164,71 @@ void SchedulePage::executeFunction(Point* locate) {
 		setStateIPage(tempState);
 	}
 }
+void EnrollPage::initializePage()
+{
+	system("cls");
+	//Doc file Course json
+	json course=json::array();
+	ifstream file("Course.json", ios::in);
+	if (file.fail()) cout << "Cannot open file!" << endl;
+	else {
+
+		file>>course;
+	}
+	file.close();
+	// Dem so coures trong Course.json
+
+	auto countCourse = course.size();
+
+	//Tao Table
+	Table* enrollPage = new Table(3, 3, countCourse, 2, 2, 2);
+	for (int i = 0; i < countCourse; i++)
+	{
+		enrollPage->getTable()[i][0]->setContent("\u25A0");
+		enrollPage->getTable()[i][1]->setContent(course[i]["name"]);
+	}
+	enrollPage->insertAbove(*getStateIPage()->getMenuTable());
+	enrollPage->beautifyTable();
+	setIPageTable(enrollPage);
+}
+void EnrollPage::executeFunction(Point* locate)
+{
+	if (locate->X() == 0 && locate->Y() == getIPageTable()->getTable()[0].size() - 1) 
+	{
+		State* tempState = getStateIPage();
+		tempState->setExitFlag(Interface::YesNoQuestionBox(new Point(2, 2), "Do u want to exit?"));
+		setStateIPage(tempState);
+	}
+	if (locate->X() == 1 && locate->Y() == 0) {
+		string editstring = edit(getIPageTable()->getTable()[locate->X()][locate->Y()]);
+	}
+	if (locate->X() == 2 && locate->Y() == 0) {
+		string editstring = edit(getIPageTable()->getTable()[locate->X()][locate->Y()]);
+	}
+}
+string EnrollPage::edit(Point*& locate)
+{
+	string editString="\xfb";
+	bool confirmChange = false;
+	string oldContent = "\u25A0";
+	locate->clearPrintedContent();
+	Point* tickBox = new Point(locate->X() + locate->Content().size() + editString.size() + 1 /*Khoang cach giua edit va confirm*/, locate->Y());
+	if (editString != "") {
+		confirmChange = Interface::YesNoQuestionBox(tickBox, "Confirm Tick? ");
+	}
+	if (confirmChange == false) {
+		locate->clearPrintedContent();
+		locate->setContent(oldContent);
+		cout << *locate;
+		editString = "";
+	}
+	else {
+		locate->setContent("\xfb");
+	}
+	delete tickBox;
+	return editString;
+}
+
 
 IPage* Factory::clone(Point* locate, State* state) {
 	IPage* newPage = NULL;
@@ -178,7 +242,7 @@ IPage* Factory::clone(Point* locate, State* state) {
 		// transcript page
 	}
 	else if (locate->X() == 0 && locate->Y() == 3) {
-		// enroll page
+		newPage = new EnrollPage(state);
 	}
 	return newPage;
 }
@@ -272,3 +336,5 @@ void Interface::run() {
 	}
 	system("cls");
 }
+
+

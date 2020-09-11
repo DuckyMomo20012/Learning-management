@@ -32,4 +32,6 @@ public:
 	friend ostream& operator<< (ostream& out, Point& object);
 	void operator>> (string content);
 	bool operator==(const Point& obj);
+public:
+	bool tickBox(unsigned ignoreSpace, unsigned max_size);
 };

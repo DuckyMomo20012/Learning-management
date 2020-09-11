@@ -83,3 +83,30 @@ void Point::operator>> (string content) {
 bool Point::operator==(const Point& obj) {
 	return (_x == obj._x) && (_y == obj._y);
 }
+
+bool Point::tickBox(unsigned ignoreSpace, unsigned max_size)
+{
+	goTo(_x + ignoreSpace + _content.size(), _y);
+	while (1) {
+		char type = _getch();
+		if ((_content.size() < max_size) && (type >= 47 && type <= 122)) {
+			goTo(_x + ignoreSpace + _content.size(), _y);
+			cout << type;
+			_content.push_back(type);
+		}
+		else if (8 == type && _content.size() > 0) {
+			_content.pop_back();
+			goTo(_x + ignoreSpace + _content.size(), _y);
+			cout << " ";
+			goTo(_x + ignoreSpace + _content.size(), _y);
+		}
+		else if (27 == type) {
+			clearPrintedContent();
+			break;
+		}
+		else if (13 == type) {
+			break;
+		}
+	}
+	return true;
+}

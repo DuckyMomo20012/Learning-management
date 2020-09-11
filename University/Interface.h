@@ -1,4 +1,5 @@
 #pragma once
+#include<sstream>
 #include <fstream>
 #include <string>
 #include <iostream>
@@ -85,6 +86,18 @@ public:
 	void initializePage() override;
 	void executeFunction(Point* locate) override;
 };
+class EnrollPage :public IPage
+{
+public:
+	EnrollPage(State* state) : IPage(state) {
+		initializePage();
+	}
+public:
+	void initializePage() override;
+	void executeFunction(Point* locate) override;
+public:
+	string edit(Point*& locate);
+};
 
 class Factory {
 public:
@@ -120,4 +133,3 @@ public:
 	static bool YesNoQuestionBox(Point* locate, string sentence);
 	void run();
 };
-//test commit

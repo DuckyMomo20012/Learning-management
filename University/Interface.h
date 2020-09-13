@@ -9,6 +9,7 @@
 #include "Course.h"
 #include "Table.h"
 #include "json.hpp"
+
 using namespace std;
 
 using json = nlohmann::json;
@@ -133,3 +134,7 @@ public:
 	static bool YesNoQuestionBox(Point* locate, string sentence);
 	void run();
 };
+
+
+json readJson(string path, json input);
+void writeJson(string path, json output);

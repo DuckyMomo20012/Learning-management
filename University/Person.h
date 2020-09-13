@@ -36,11 +36,25 @@ public:
 	Student(const json& info) : Person(info) {
 		setSchoolYear(info["schoolyear"]);
 		setDepartment(info["department"]);
-		if (info["course"].size() > 0) {
-			for (auto it : info["course"]) {
+		if(info.contains("course")==true)
+		//if (info["course"].size() > 0)
+		{
+			for (auto it : info["course"])
+			{
 				_course.push_back(new Course(it));
 			}
 		}
+		else
+		{
+			_course.clear();
+		}
+		/*if (info["course"].size() != 0)
+		{
+			for (auto it : info["course"])
+			{
+				_course.push_back(new Course(it));
+			}
+		}*/
 	}
 	Student(Student& other);
 	Student& operator= (Student& other);

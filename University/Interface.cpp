@@ -137,16 +137,29 @@ void SchedulePage::initializePage() {
 	schedulePage->getTable()[2][0]->setContent("2");
 	schedulePage->getTable()[3][0]->setContent("3");
 	schedulePage->getTable()[4][0]->setContent("4");
-	for (int i = 1; i < 6; i++) {
-		schedulePage->getTable()[0][i]->setContent(weekday[i - 1]);
-		for (auto it : getStateIPage()->User()->getCourse()) {
-			map<string, int> time = it->Time();
-			if (time.find(weekday[i - 1]) != time.end()) {
-				int shift = it->Time()[weekday[i - 1]];
-				schedulePage->getTable()[shift][i]->setContent(it->Name());
+	if(getStateIPage()->User()->getCourse().empty()==false)
+	{
+		for (int i = 1; i < 6; i++) {
+			schedulePage->getTable()[0][i]->setContent(weekday[i - 1]);
+			for (auto it : getStateIPage()->User()->getCourse()) {
+				map<string, int> time = it->Time();
+				if (time.find(weekday[i - 1]) != time.end()) {
+					int shift = it->Time()[weekday[i - 1]];
+					schedulePage->getTable()[shift][i]->setContent(it->Name());
+				}
 			}
 		}
 	}
+	else
+	{
+		for (int i = 1; i < 6; i++) {
+			schedulePage->getTable()[0][i]->setContent(weekday[i - 1]);
+		}
+		int k = 1;
+		for (int i = 1; i < 5; i++)
+			schedulePage->getTable()[i][k]->setContent("");
+		k++;
+		}
 	schedulePage->insertAbove(*getStateIPage()->getMenuTable());
 	schedulePage->beautifyTable();
 	setIPageTable(schedulePage);
@@ -164,28 +177,67 @@ void SchedulePage::executeFunction(Point* locate) {
 		setStateIPage(tempState);
 	}
 }
+json readJson(string path,json input)
+{
+	input = json::array();
+	ifstream file(path, ios::in);
+	if (file.fail()) cout << "Cannot open file!" << endl;
+	else {
+
+		file >> input;
+	}
+	file.close();
+	return input;
+}
+void writeJson(string path, json output)
+{
+	ofstream fileo(path, ios::trunc || ios::out);
+	fileo << output.dump(4);
+	fileo.close();
+}
 void EnrollPage::initializePage()
 {
 	system("cls");
 	//Doc file Course json
-	json course=json::array();
-	ifstream file("Course.json", ios::in);
-	if (file.fail()) cout << "Cannot open file!" << endl;
-	else {
-
-		file>>course;
-	}
-	file.close();
+	json course;
+	course = readJson("Course.json", course);
 	// Dem so coures trong Course.json
-
 	auto countCourse = course.size();
+	//Doc Student.json
+	json student;
+	student = readJson("Student.json", student);
+	//Check thu tu cua student
+	State* tempState = getStateIPage();
+	int I = 0;
+	int J = 0;
+	for (int i = 0; i < student.size(); i++)
+	{
+		if (student[i]["id"] == tempState->User()->Id())
+		{
+			I = i;
+		}
+	}
+	delete tempState;
 
 	//Tao Table
 	Table* enrollPage = new Table(3, 3, countCourse, 2, 2, 2);
-	for (int i = 0; i < countCourse; i++)
+	if (student[I]["course"].size() == 0)
 	{
-		enrollPage->getTable()[i][0]->setContent("\u25A0");
-		enrollPage->getTable()[i][1]->setContent(course[i]["name"]);
+		for (int i = 0; i < countCourse; i++)
+		{
+
+			enrollPage->getTable()[i][0]->setContent("\u25A0");
+			enrollPage->getTable()[i][1]->setContent(course[i]["name"]);
+		}
+	}
+	else
+	{
+		for (int i = 0; i < countCourse; i++)
+		{
+
+			enrollPage->getTable()[i][0]->setContent("\u25A0");
+			enrollPage->getTable()[i][1]->setContent(course[i]["name"]);
+		}
 	}
 	enrollPage->insertAbove(*getStateIPage()->getMenuTable());
 	enrollPage->beautifyTable();
@@ -193,6 +245,43 @@ void EnrollPage::initializePage()
 }
 void EnrollPage::executeFunction(Point* locate)
 {
+	//Doc student.json
+	json student;
+	student = readJson("Student.json", student);
+	//Doc file course.json
+	json course;
+	course = readJson("Course.json", course);
+	//
+	State* tempState = getStateIPage();
+	int I = 0;
+	int J = 0;
+	for (int i = 0; i < student.size(); i++)
+	{
+		if (student[i]["id"] == tempState->User()->Id())
+		{
+			I = i;
+		}
+	}
+	delete tempState;
+	vector<string>courseName;//Luu ten mon hoc
+	for (int i = 0; i < course.size(); i++)
+	{
+		courseName.push_back(course[i]["name"]);
+	}
+	vector<int> mark;// luu thu tu cua mon hoc trong course
+	for (int i = 0; i < student[I]["course"].size(); i++)
+	{
+		for (int j = 0; j < courseName.size(); j++)
+		{
+			if (student[I]["course"][i]["name"] == courseName[j]);
+			{
+				mark.push_back(i);
+			}
+		}
+	}
+	//define mark[0]=DSTT
+	//mark[1]=OOP
+	//
 	if (locate->X() == 0 && locate->Y() == getIPageTable()->getTable()[0].size() - 1) 
 	{
 		State* tempState = getStateIPage();
@@ -200,11 +289,48 @@ void EnrollPage::executeFunction(Point* locate)
 		setStateIPage(tempState);
 	}
 	if (locate->X() == 1 && locate->Y() == 0) {
-		string editstring = edit(getIPageTable()->getTable()[locate->X()][locate->Y()]);
+		State* tempState = getStateIPage();
+		if (locate->Content() != "\xfb")
+		{
+			string editstring = edit(getIPageTable()->getTable()[locate->X()][locate->Y()]);
+			if (editstring == "\xfb")
+			{
+				student[I]["course"].push_back(course[0]);
+			}
+		}
+		if (locate->Content() == "\xfb")
+		{
+			string editstring = edit(getIPageTable()->getTable()[locate->X()][locate->Y()]);
+			if (editstring != "\xfb")
+			{
+				student[I]["course"].erase(student[I]["course"].begin() + mark[0]);
+			}
+		}
+		setStateIPage(tempState);
 	}
+	
 	if (locate->X() == 2 && locate->Y() == 0) {
-		string editstring = edit(getIPageTable()->getTable()[locate->X()][locate->Y()]);
+		State* tempState = getStateIPage();
+		if (locate->Content() != "\xfb")
+		{
+			string editstring = edit(getIPageTable()->getTable()[locate->X()][locate->Y()]);
+			if (editstring == "\xfb")
+			{
+						student[I]["course"].push_back(course[1]);
+			}
+		}
+		if (locate->Content() == "\xfb")
+		{
+			string editstring = edit(getIPageTable()->getTable()[locate->X()][locate->Y()]);
+			if (editstring != "\xfb")
+			{
+				student[I]["course"].erase(student[I]["course"].begin() + mark[1]);
+			}
+		}
+		setStateIPage(tempState);
 	}
+	//Luu file
+	writeJson("Student.json", student);
 }
 string EnrollPage::edit(Point*& locate)
 {

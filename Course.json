@@ -1,0 +1,38 @@
+[
+  {
+    "id": "CSC0001",
+    "name": "DSTT",
+    "time": [
+      {
+        "weekday": "MONDAY",
+        "shift": 1
+      },
+      {
+        "weekday": "WEDNESDAY",
+        "shift": 3
+      },
+      {
+        "weekday": "THURSDAY",
+        "shift": 4
+      }
+    ]
+  },
+  {
+    "id": "CSC0002",
+    "name": "OOP",
+    "time": [
+      {
+        "weekday": "TUESDAY",
+        "shift": 2
+      },
+      {
+        "weekday": "THURSDAY",
+        "shift": 4
+      },
+      {
+        "weekday": "FRIDAY",
+        "shift": 4
+      }
+    ]
+  }
+]

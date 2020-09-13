@@ -49,4 +49,5 @@ public:
 	void insertRowBelow(const vector<string>& values);
 	void showTableContent();
 	Point* moveWithinTable();
+	void deleteRow(unsigned rowPos);
 };

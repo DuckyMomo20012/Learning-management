@@ -18,8 +18,7 @@ void State::initializeMenuTable() {
 }
 
 void MainPage::initializePage() {
-	Table* tempTable = getStateIPage()->getMenuTable();
-	setIPageTable(tempTable);
+	setIPageTable(getStateIPage()->getMenuTable());
 }
 
 void MainPage::executeFunction(Point* locate) {
@@ -31,7 +30,6 @@ void MainPage::executeFunction(Point* locate) {
 }
 
 void InfoPage::initializePage() {
-	system("cls");
 	Table* infoPage = new Table(3, 3, 2, 4);
 	infoPage->insertRowBelow({ "ID: " + getStateIPage()->User()->Id() });
 	infoPage->insertRowBelow({ "NAME: " + getStateIPage()->User()->Name() });
@@ -124,7 +122,6 @@ string InfoPage::edit(Point*& locate, string ignoreString) {
 }
 
 void SchedulePage::initializePage() {
-	system("cls");
 	vector <string> weekday = { "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" };
 	Table* schedulePage(new Table(3, 3, 2, 2, 5, 6));
 	schedulePage->getTable()[0][0]->setContent("SHIFT");
@@ -135,11 +132,11 @@ void SchedulePage::initializePage() {
 	for (int i = 1; i < 6; i++) { // 6 ngay trong tuan
 		schedulePage->getTable()[0][i]->setContent(weekday[i - 1]);
 		for (auto it : getStateIPage()->User()->getCourse()) {
-			map<string, vector<int>> time = it->Time();
+			map<string, vector<string>> time = it->Time();
 			if (time.find(weekday[i - 1]) != time.end()) {
 				for (auto shiftAmount : time[weekday[i - 1]]) { // so ca hoc trong ngay
-					int shift = shiftAmount;
-					schedulePage->getTable()[shift][i]->setContent(it->Name());
+					string shift = shiftAmount;
+					schedulePage->getTable()[stoi(shift)][i]->setContent(it->Name());
 				}
 			}
 		}
@@ -162,7 +159,42 @@ void SchedulePage::executeFunction(Point* locate) {
 }
 
 void EnrollPage::initializePage() {
-	system("cls");
+	getCourse();
+	Table* enrollPage = new Table(3, 3, 2, 4);
+	for (auto it : _courseStore) {
+		stringstream courseInfo;
+		courseInfo << "ID: " << it.first->Id() << " NAME: " << it.first->Name() << " TIME:";
+		for (auto it2 : it.first->Time()) {
+			courseInfo << " " + it2.first + ": SHIFT: ";
+			for (auto it3 : it2.second) {
+				courseInfo <<  it3 << " ";
+			}
+		}
+		courseInfo << "SLOT: " << it.second;
+		enrollPage->insertRowBelow({ courseInfo.str() });
+	}
+	enrollPage->insertAbove(*getStateIPage()->getMenuTable());
+	if (_courseChosenStore.size() != 0) {
+		enrollPage->beautifyTable();
+		Table* _courseChosenTable = new Table(enrollPage->getTable().back()[0]->X(), enrollPage->getTable().back()[0]->Y() + 4, 2, 4);
+		_courseChosenTable->insertRowBelow({ "CHOSEN COURSE:" });
+		for (auto it : _courseChosenStore) {
+			stringstream courseInfo;
+			courseInfo << "ID: " << it->Id() << " NAME: " << it->Name() << " TIME:";
+			for (auto it2 : it->Time()) {
+				courseInfo << " " << it2.first << ": SHIFT: ";
+				for (auto it3 : it2.second) {
+					courseInfo <<  it3 << " " ;
+				}
+			}
+			string warning = checkCourseHasSameTime(it);
+			courseInfo << warning;
+			_courseChosenTable->insertRowBelow({ courseInfo.str() });
+		}
+		enrollPage->insertBelow(*_courseChosenTable);
+		enrollPage->insertRowBelow({ "SAVE CHANGES " });
+	}
+	setIPageTable(enrollPage);
 }
 
 void EnrollPage::executeFunction(Point* locate) {
@@ -171,22 +203,189 @@ void EnrollPage::executeFunction(Point* locate) {
 		tempState->setExitFlag(Interface::YesNoQuestionBox(new Point(2, 2), "Do u want to exit?"));
 		setStateIPage(tempState);
 	}
+	else if ((locate->X() >= 1 && locate->X() <= _courseStore.size()) && 0 == locate->Y()) {
+		pickCourse(locate);
+		refresh();
+	}
+	else if ((locate->X() > _courseStore.size() && locate->X() < getIPageTable()->getTable().size() - 1) && 0 == locate->Y()) {
+		deleteCourse(locate);
+		refresh();
+	}
+	else if (locate->X() == getIPageTable()->getTable().size() - 1 && 0 == locate->Y()) {
+		saveChanges(getIPageTable()->getTable()[locate->X()][0]);
+		refresh();
+	}
+	else if (locate->X() == -1 && locate->Y() == -1) {
+		State* tempState = getStateIPage();
+		tempState->setGoBackFlag(true);
+		setStateIPage(tempState);
+	}
 }
 
 void EnrollPage::getCourse() {
 	fstream file("Course.json", ios::in);
 	if (file.fail()) cout << "CANNOT OPEN FILE!!!";
 	else {
+		vector<pair<Course*, string>> empty;
+		_courseStore.swap(empty);
 		json arrayCourse = json::array();
+		vector <Course*> tempCourse = getStateIPage()->User()->getCourse();
 		file >> arrayCourse;
 		for (auto it : arrayCourse) {
-			for (auto it2 : arrayCourse["time"]) {
-				_totalSelection += it2["shift"].size();
+			bool find = false;
+			for (auto it2 : tempCourse) {
+				if (it2->Id() == it["id"]) {
+					find = true;
+					break;
+				}
 			}
-			
+			if (find == false && it["slot"] > 0) {
+				stringstream info;
+				info << it["slot"] << "/" << it["totalSlot"];
+				_courseStore.push_back(make_pair(new Course(it), info.str()));
+			}
 		}
 	}
 	file.close();
+}
+
+void EnrollPage::refresh() {
+	initializePage();
+}
+
+void EnrollPage::increaseSlot(Course* chosenCourse) {
+	ifstream file("Course.json", ios::in);
+	if (file.fail()) cout << "CANNOT OPEN FILE!!!";
+	else {
+		json arrayCourse = json::array();
+		file >> arrayCourse;
+		for (unsigned i = 0; i < arrayCourse.size(); i++) {
+			bool flagRightCourse = false;
+			for (unsigned j = 0; j < arrayCourse[i]["time"].size(); j++) {
+				map<string, vector<string>> time = chosenCourse->Time();
+				flagRightCourse = time.find(arrayCourse[i]["time"][j]["weekday"]) != time.end() ? true : false;
+				if (flagRightCourse == false) break;
+				vector<string> shift;
+				for (unsigned k = 0; k < arrayCourse[i]["time"][j]["shift"].size(); k++) {
+					shift.push_back(arrayCourse[i]["time"][j]["shift"][k]);
+				}
+				flagRightCourse = chosenCourse->Time()[arrayCourse[i]["time"][j]["weekday"]] == shift ? true : false;
+				if (flagRightCourse == false) break;
+			}
+			if (flagRightCourse == true) {
+				arrayCourse[i]["slot"] = arrayCourse[i]["slot"] + 1;
+			}
+		}
+		ofstream fileout("Course.json", ios::trunc);
+		if (fileout.fail()) cout << "CANNOT OPEN FILE";
+		else {
+			fileout << arrayCourse.dump(4);
+		}
+		fileout.close();
+	}
+	file.close();
+}
+
+void EnrollPage::decreaseSlot(Course* chosenCourse) {
+	ifstream file("Course.json", ios::in);
+	if (file.fail()) cout << "CANNOT OPEN FILE!!!";
+	else {
+		json arrayCourse = json::array();
+		file >> arrayCourse;
+		for (unsigned i = 0; i < arrayCourse.size(); i++) {
+			bool flagRightCourse = false;
+			for (unsigned j = 0; j < arrayCourse[i]["time"].size(); j++) {
+				map<string, vector<string>> time = chosenCourse->Time();
+				flagRightCourse = time.find(arrayCourse[i]["time"][j]["weekday"]) != time.end() ? true : false;
+				if (flagRightCourse == false) break;
+				vector<string> shift;
+				for (unsigned k = 0; k < arrayCourse[i]["time"][j]["shift"].size(); k++) {
+					shift.push_back(arrayCourse[i]["time"][j]["shift"][k]);
+				}
+				flagRightCourse = chosenCourse->Time()[arrayCourse[i]["time"][j]["weekday"]] == shift ? true : false;
+				if (flagRightCourse == false) break;
+			}
+			if (flagRightCourse == true) {
+				arrayCourse[i]["slot"] = arrayCourse[i]["slot"] - 1;
+			}
+		}
+		ofstream fileout("Course.json", ios::trunc);
+		if (fileout.fail()) cout << "CANNOT OPEN FILE";
+		else {
+			fileout << arrayCourse.dump(4);
+		}
+		fileout.close();
+	}
+	file.close();
+}
+
+void EnrollPage::pickCourse(Point* locate) {
+	Course* chosenCourse = _courseStore[locate->X() - 1].first;
+	if (_courseChosenStore.empty() == true) {
+		_courseChosenStore.push_back(chosenCourse);
+		decreaseSlot(chosenCourse);
+	}
+	else {
+		_courseChosenStore.push_back(chosenCourse);
+		decreaseSlot(chosenCourse);
+	}
+}
+
+void EnrollPage::deleteCourse(Point* locate) {
+	bool confirmChange = false;
+	Point* confirmBox = new Point
+	(getIPageTable()->getTable()[locate->X()][locate->Y()]->X() + getIPageTable()->getTable()[locate->X()][locate->Y()]->Content().size() + 1 /*Khoang cach giua edit va confirm*/, getIPageTable()->getTable()[locate->X()][locate->Y()]->Y());
+	confirmChange = Interface::YesNoQuestionBox(confirmBox, "Confirm remove this course? ");
+	if (confirmChange == true) {
+		increaseSlot(_courseChosenStore[locate->X() - _courseStore.size() - 2]);
+		_courseChosenStore.erase(_courseChosenStore.begin() + (locate->X() - _courseStore.size() - 2)); // loai dong chosen course 
+		getIPageTable()->deleteRow(locate->X());
+	}
+	delete confirmBox;
+}
+
+void EnrollPage::saveChanges(Point* locate) {
+	bool confirmChange = false;
+	Point* confirmBox = new Point(locate->X() + locate->Content().size() + 1 /*Khoang cach giua edit va confirm*/, locate->Y());
+	confirmChange = Interface::YesNoQuestionBox(confirmBox, "Confirm? ");
+	if (confirmChange == true) {
+		for (auto it : _courseChosenStore) {
+			getStateIPage()->User()->pushBackCourse(it);
+		}
+		_courseChosenStore.clear();
+	}
+	delete confirmBox;
+}
+
+string EnrollPage::checkCourseHasSameTime(Course* course) {
+	bool flagCheckChosenCourse = false;
+	bool flagCheckStudentCourse = false;
+	int countChosenCourse = 0; // tai duyet mang co chua chinh no
+	int countStudentCourse = 0; // tai duyet mang co chua chinh no
+	for (auto it : _courseChosenStore) {
+		bool flagSameTime = course->checkSameTime(it);
+		if (flagSameTime == true) {
+			countChosenCourse++;
+			if (countChosenCourse > 1) {
+				flagCheckChosenCourse = true;
+				break;
+			}
+		}
+	}
+	for (auto it : getStateIPage()->User()->getCourse()) {
+		bool flagSameTime = course->checkSameTime(it);
+		if (flagSameTime == true) {
+			countStudentCourse++;
+			if (countStudentCourse > 1) {
+				flagCheckStudentCourse = true;
+				break;
+			}
+		}
+	}
+	stringstream warning;
+	if (flagCheckChosenCourse == true) { warning << "TRUNG GIO HOC VOI CAC KHOA DA CHON "; }
+	if (flagCheckStudentCourse == true) { warning << "TRUNG GIO HOC VOI CAC KHOA TRONG TKB "; }
+	return warning.str();
 }
 
 IPage* Factory::clone(Point* locate, State* state) {
@@ -201,7 +400,7 @@ IPage* Factory::clone(Point* locate, State* state) {
 		// transcript page
 	}
 	else if (locate->X() == 0 && locate->Y() == 3) {
-		// enroll page
+		newPage = EnrollPage::instance(state);
 	}
 	return newPage;
 }

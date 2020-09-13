@@ -175,7 +175,7 @@ void Table::insertRowBelow(const vector<string>& values) {
 		newRow.push_back(new Point(x++, y + rowGap, it));
 	}
 	_row++;
-	_col = values.size();
+	if (values.size() > _col) _col = values.size();
 	_table.push_back(newRow);
 }
 
@@ -230,4 +230,11 @@ Point* Table::moveWithinTable() {
 		}
 	}
 	return new Point(row, col);
+}
+
+void Table::deleteRow(unsigned rowPos) {
+	if (rowPos < _table.size()) {
+		_table.erase(_table.begin() + rowPos);
+		_row--;
+	}
 }

@@ -2,8 +2,10 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <set>
 #include <list>
+#include <algorithm>
 #include "Person.h"
 #include "Course.h"
 #include "Table.h"
@@ -88,16 +90,28 @@ public:
 
 class EnrollPage : public IPage {
 private:
-	unsigned _totalSelection;
-public:
-	EnrollPage(State* state) : IPage(state), _totalSelection(0) {
+	vector <pair<Course*, string>> _courseStore;
+	vector <Course*> _courseChosenStore;
+private:
+	EnrollPage(State* state) : IPage(state) {
 		initializePage();
 	}
 public:
+	static IPage* instance(State* state) {
+		static EnrollPage* neo = new EnrollPage(state);
+		return neo;
+	}
 	void initializePage() override;
 	void executeFunction(Point* locate) override;
 public:
 	void getCourse();
+	void refresh();
+	void increaseSlot(Course* course);
+	void decreaseSlot(Course* course);
+	void pickCourse(Point* locate);
+	void deleteCourse(Point* locate);
+	void saveChanges(Point* locate);
+	string checkCourseHasSameTime(Course* course);
 };
 
 class Factory {
@@ -121,7 +135,7 @@ private:
 	Caretaker _care;
 public:
 	Interface() : _state() {
-		resizeConsole(900, 500);
+		//resizeConsole(900, 500);
 	}
 public:
 	State* getState() { return _state; }

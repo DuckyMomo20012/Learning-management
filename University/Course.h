@@ -12,7 +12,7 @@ class Course {
 private:
 	string _id, _name;
 	vector<int> _point;
-	map<string, vector<int>> _time;
+	map<string, vector<string>> _time;
 public:
 	Course() : _id(""), _name("") {}
 	Course(string id, string name) : _id(id), _name(name) {}
@@ -24,7 +24,8 @@ public:
 	void setName(string value) { _name = value; }
 	vector<int> Point() { return _point; }
 	void setPoint(vector <int> value) { _point = value; }
-	void setPoint(const int& value, const int& pos);
-	map<string, vector<int>> Time() { return _time; }
-	void setTime(map<string, vector<int>> value) { _time = value; }
+	map<string, vector<string>> Time() { return _time; }
+	void setTime(map<string, vector<string>> value) { _time = value; }
+	bool operator== (Course* other);
+	bool checkSameTime(Course* other);
  };

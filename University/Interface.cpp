@@ -388,6 +388,38 @@ string EnrollPage::checkCourseHasSameTime(Course* course) {
 	return warning.str();
 }
 
+void TranscriptPage::initializePage() {
+	Table* TranscriptPage = new Table(3, 3, 2, 4);
+	TranscriptPage->insertRowBelow({ "Course", "ProcessPoint", "MidPoint", "FinalPoint" });
+	for (auto it : getStateIPage()->User()->getCourse()) {
+		vector<string> coursePoint;
+		coursePoint.push_back(it->Name() + " ");
+		for (auto it2 : it->Point()) {
+			stringstream point;
+			for (auto it3 : it2) {
+				point << it3 << " ";
+			}
+			coursePoint.push_back(point.str());
+		}
+		TranscriptPage->insertRowBelow({ coursePoint });
+	}
+	TranscriptPage->insertAbove(*getStateIPage()->getMenuTable());
+	setIPageTable(TranscriptPage);
+}
+
+void TranscriptPage::executeFunction(Point* locate) {
+	if (locate->X() == 0 && locate->Y() == getIPageTable()->getTable()[0].size() - 1) {
+		State* tempState = getStateIPage();
+		tempState->setExitFlag(Interface::YesNoQuestionBox(new Point(2, 2), "Do u want to exit?"));
+		setStateIPage(tempState);
+	}
+	else if (locate->X() == -1 && locate->Y() == -1) {
+		State* tempState = getStateIPage();
+		tempState->setGoBackFlag(true);
+		setStateIPage(tempState);
+	}
+}
+
 IPage* Factory::clone(Point* locate, State* state) {
 	IPage* newPage = NULL;
 	if (locate->X() == 0 && locate->Y() == 0) {
@@ -397,7 +429,7 @@ IPage* Factory::clone(Point* locate, State* state) {
 		newPage = new SchedulePage(state);
 	}
 	else if (locate->X() == 0 && locate->Y() == 2) {
-		// transcript page
+		newPage = new TranscriptPage(state);
 	}
 	else if (locate->X() == 0 && locate->Y() == 3) {
 		newPage = EnrollPage::instance(state);

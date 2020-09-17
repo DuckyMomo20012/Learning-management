@@ -5,7 +5,11 @@ Course::Course(const json& info) {
 	setName(info["name"]);
 	if (info.contains("point") && (info["point"].size() > 0)) {
 		for (auto it : info["point"]) {
-			_point.push_back(it);
+			vector <int> temp;
+			for (auto it2 : it) {
+				temp.push_back(it2);
+			}
+			_point.push_back(temp);
 		}
 	}
 	if (info["time"].size() > 0) {

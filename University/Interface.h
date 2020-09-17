@@ -114,6 +114,25 @@ public:
 	string checkCourseHasSameTime(Course* course);
 };
 
+class TranscriptPage : public IPage {
+private:
+	vector <pair<Course*, string>> _courseStore;
+	vector <Course*> _courseChosenStore;
+public:
+	TranscriptPage(State* state) : IPage(state) {
+		initializePage();
+	}
+public:
+	//static IPage* instance(State* state) {
+	//	static TranscriptPage* neo = new TranscriptPage(state);
+	//	return neo;
+	//}
+	void initializePage() override;
+	void executeFunction(Point* locate) override;
+public:
+	
+};
+
 class Factory {
 public:
 	static IPage* clone(Point* locate, State* state);

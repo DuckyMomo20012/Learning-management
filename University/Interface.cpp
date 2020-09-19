@@ -32,13 +32,13 @@ void MainPage::executeFunction(Point* locate) {
 void InfoPage::initializePage() {
 	Table* infoPage = new Table(3, 3, 2, 4);
 	infoPage->insertRowBelow({ "ID: " + getStateIPage()->User()->Id() });
-	infoPage->insertRowBelow({ "DEPARTMENT: " + getStateIPage()->User()->Department() });
-	infoPage->insertRowBelow({ "INTAKE: " + getStateIPage()->User()->Intake() });
 	infoPage->insertRowBelow({ "NAME: " + getStateIPage()->User()->Name() });
 	infoPage->insertRowBelow({ "D.O.B: " + getStateIPage()->User()->DOB() });
 	infoPage->insertRowBelow({ "TELEPHONE: " + getStateIPage()->User()->Telephone() });
 	infoPage->insertRowBelow({ "EMAIL: " + getStateIPage()->User()->Email() });
 	infoPage->insertRowBelow({ "ADDRESS: " + getStateIPage()->User()->Address() });
+	infoPage->insertRowBelow({ "DEPARTMENT: " + getStateIPage()->User()->Department() });
+	infoPage->insertRowBelow({ "INTAKE: " + getStateIPage()->User()->Intake() });
 	infoPage->insertAbove(*getStateIPage()->getMenuTable());
 	setIPageTable(infoPage);
 }
@@ -101,7 +101,7 @@ string InfoPage::edit(Point*& locate, string ignoreString) {
 	bool confirmChange = false;
 	string oldContent = locate->Content()[0];
 	locate->clearPrintedContent();
-	locate->setContent({ ignoreString });
+	locate->setContent( ignoreString );
 	locate->print();
 	Point* editBox = new Point(locate->X() + locate->Content()[0].size(), locate->Y());
 	editString = editBox->controlConsoleInput(0, 20);
@@ -117,7 +117,7 @@ string InfoPage::edit(Point*& locate, string ignoreString) {
 		editString = "";
 	}
 	else {
-		locate->setContent({ ignoreString + editString });
+		locate->setContent(ignoreString + editString);
 	}
 	delete confirmBox, editBox;
 	return editString;

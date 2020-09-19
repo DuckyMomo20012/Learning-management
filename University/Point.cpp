@@ -71,6 +71,7 @@ void Point::clearPrintedContent() {
 	}
 	goTo(_x, _y);
 	_content.clear();
+	_content.push_back("");
 }
 
 void Point::print() {

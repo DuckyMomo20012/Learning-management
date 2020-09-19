@@ -420,26 +420,14 @@ void EnrollPage::saveStudentCourseData(vector <Course*> newCourseList) {
 string EnrollPage::checkCourseHasSameTime(Course* course) {
 	bool flagCheckChosenCourse = false;
 	bool flagCheckStudentCourse = false;
-	int countChosenCourse = 0; // tai duyet mang co chua chinh no
-	int countStudentCourse = 0; // tai duyet mang co chua chinh no
 	for (auto it : _courseChosenStore) {
-		bool flagSameTime = course->checkSameTime(it);
-		if (flagSameTime == true) {
-			countChosenCourse++;
-			if (countChosenCourse > 1) {
-				flagCheckChosenCourse = true;
-				break;
-			}
+		if (course != it) {
+			flagCheckChosenCourse = course->checkSameTime(it);
 		}
 	}
 	for (auto it : getStateIPage()->User()->getCourse()) {
-		bool flagSameTime = course->checkSameTime(it);
-		if (flagSameTime == true) {
-			countStudentCourse++;
-			if (countStudentCourse > 1) {
-				flagCheckStudentCourse = true;
-				break;
-			}
+		if (course != it) {
+			flagCheckStudentCourse = course->checkSameTime(it);
 		}
 	}
 	stringstream warning;

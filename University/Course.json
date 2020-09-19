@@ -7,7 +7,7 @@
             {
                 "shift": [
                     "1",
-                    "2"
+                    "3"
                 ],
                 "weekday": "TUESDAY"
             }
@@ -24,7 +24,7 @@
                     "3",
                     "4"
                 ],
-                "weekday": "THURSDAY"
+                "weekday": "WEDNESDAY"
             }
         ],
         "totalSlot": 10
@@ -32,20 +32,20 @@
     {
         "id": "CSC0006",
         "name": "KTLT",
-        "slot": 10,
+        "slot": 9,
         "time": [
             {
                 "shift": [
-                    "2"
+                    "3"
                 ],
-                "weekday": "MONDAY"
+                "weekday": "WEDNESDAY"
             },
             {
                 "shift": [
                     "1",
                     "2"
                 ],
-                "weekday": "TUESDAY"
+                "weekday": "FRIDAY"
             }
         ],
         "totalSlot": 10
@@ -61,7 +61,7 @@
                     "2",
                     "3"
                 ],
-                "weekday": "TUESDAY"
+                "weekday": "THRUSDAY"
             }
         ],
         "totalSlot": 10

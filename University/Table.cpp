@@ -64,14 +64,42 @@ void Table::createTable(Point* tableCoordinate) {
 	}
 }
 
+void Table::wrapText(unsigned rowPos, unsigned contentLimit) {
+	for (auto it : _table[rowPos]) {
+		if (it->Content()[0].size() > contentLimit) {
+			vector<string> wrappedContent;
+			string copy = it->Content()[0];
+			while (copy.size() > contentLimit) {
+				string subStringToFindLastSpace = copy.substr(0, contentLimit);
+				size_t spacePos = subStringToFindLastSpace.find_last_of(" ");
+				if (spacePos != subStringToFindLastSpace.npos) {
+					wrappedContent.push_back(copy.substr(0, spacePos));
+					copy = copy.substr(spacePos + 1, copy.size() - spacePos);
+				}
+				else {
+					wrappedContent.push_back(copy.substr(0, contentLimit));
+					copy = copy.substr(contentLimit + 1, copy.size() - contentLimit);
+				}
+			}
+			if (wrappedContent.empty() == false) wrappedContent.push_back(copy);
+			it->setWrappedContent(wrappedContent);
+		}
+	}
+}
+
 void Table::beautifyTable() {
+	for (unsigned k = 0; k < _table.size(); k++) {
+		wrapText(k, 30);
+	}
 	for (unsigned i = 0; i < (unsigned)_col; i++) {
 		unsigned max_string = 0;
 		int max_x = 0;
 		for (unsigned j = 0; j < _table.size(); j++) {
-			if (_table[j].size() > i) {
-				if (_table[j][i]->Content().size() > max_string) {
-					max_string = _table[j][i]->Content().size();
+			if (_table[j].size() > i + 1) { // xet xem o ke ben phai co nd ko, neu ko thi skip
+				for (unsigned k = 0; k < _table[j][i]->Content().size(); k++) {
+					if (_table[j][i]->Content()[k].size() > max_string) {
+						max_string = _table[j][i]->Content()[k].size();
+					}
 				}
 				if (_table[j][i]->X() > max_x) max_x = _table[j][i]->X();
 			}
@@ -82,9 +110,13 @@ void Table::beautifyTable() {
 			}
 		}
 	}
-	for (unsigned k = 0; k < _table.size() - 1; k++) {
-		for (unsigned j = 0; j < _table[k + 1].size(); j++) {
-			_table[k + 1][j]->setY(_table[k][0]->Y() + _rowGap);
+	for (unsigned i = 0; i < _table.size() - 1; i++) {
+		unsigned max_y = 0;
+		for (unsigned j = 0; j < _table[i].size(); j++) {
+			if (_table[i][j]->Content().size() - 1 > max_y) max_y = _table[i][j]->Content().size() - 1;
+		}
+		for (unsigned k = 0; k < _table[i + 1].size(); k++) {
+			_table[i + 1][k]->setY(_table[i][0]->Y() + max_y + _rowGap);
 		}
 	}
 }
@@ -175,7 +207,7 @@ void Table::insertRowBelow(const vector<string>& values) {
 		newRow.push_back(new Point(x++, y + rowGap, it));
 	}
 	_row++;
-	if (values.size() > _col) _col = values.size();
+	if (values.size() > (unsigned)_col) _col = values.size();
 	_table.push_back(newRow);
 }
 
@@ -183,7 +215,7 @@ void Table::showTableContent() {
 	beautifyTable();
 	for (auto it : _table) {
 		for (auto it2 : it) {
-			cout << *it2;
+			it2->print();
 		}
 	}
 }

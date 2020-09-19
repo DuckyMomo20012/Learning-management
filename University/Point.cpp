@@ -36,19 +36,20 @@ void Point::setPointerTo() {
 }
 
 string Point::controlConsoleInput(unsigned ignoreSpace, unsigned max_size) {
-	goTo(_x + ignoreSpace + _content.size(), _y);
+	if (_content.empty()) _content.push_back("");
+	goTo(_x + ignoreSpace + _content[0].size(), _y);
 	while (1) {
 		char type = _getch();
-		if ((_content.size() < max_size) && (type >= 47 && type <= 122)) {
-			goTo(_x + ignoreSpace + _content.size(), _y);
+		if ((_content[0].size() < max_size) && (type >= 47 && type <= 122)) {
+			goTo(_x + ignoreSpace + _content[0].size(), _y);
 			cout << type;
-			_content.push_back(type);
+			_content[0].push_back(type);
 		}
 		else if (8 == type && _content.size() > 0) {
-			_content.pop_back();
-			goTo(_x + ignoreSpace + _content.size(), _y);
+			_content[0].pop_back();
+			goTo(_x + ignoreSpace + _content[0].size(), _y);
 			cout << " ";
-			goTo(_x + ignoreSpace + _content.size(), _y);
+			goTo(_x + ignoreSpace + _content[0].size(), _y);
 		}
 		else if (27 == type) {
 			clearPrintedContent();
@@ -58,26 +59,25 @@ string Point::controlConsoleInput(unsigned ignoreSpace, unsigned max_size) {
 			break;
 		}
 	}
-	return _content;
+	return _content[0];
 }
 
 void Point::clearPrintedContent() {
 	for (unsigned i = 0; i < _content.size(); i++) {
-		goTo(_x + i, _y);
-		cout << " ";
+		for (unsigned j = 0; j < _content[i].size(); j++) {
+			goTo(_x + j, _y + i);
+			cout << " ";
+		}
 	}
 	goTo(_x, _y);
 	_content.clear();
 }
 
-ostream& operator<<(ostream& out, Point& object) {
-	object.goTo();
-	out << object.Content();
-	return out;
-}
-
-void Point::operator>> (string content) {
-	_content = content;
+void Point::print() {
+	for (int i = 0; i < _content.size(); i++) {
+		goTo(_x, _y + i);
+		cout << _content[i];
+	}
 }
 
 bool Point::operator==(const Point& obj) {

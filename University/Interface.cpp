@@ -14,7 +14,7 @@ State::~State() {
 }
 
 void State::initializeMenuTable() {
-	_menuTable->insertRowBelow({ "INFO", "SCHEDULE", "TRANSCRIPT", "ENROLL", "EXIT"});
+	_menuTable->insertRowBelow({ "INFO", "SCHEDULE", "TRANSCRIPT", "ENROLL", "EXIT" });
 }
 
 void MainPage::initializePage() {
@@ -99,13 +99,13 @@ void InfoPage::executeFunction(Point* locate) {
 string InfoPage::edit(Point*& locate, string ignoreString) {
 	string editString;
 	bool confirmChange = false;
-	string oldContent = locate->Content();
+	string oldContent = locate->Content()[0];
 	locate->clearPrintedContent();
-	locate->setContent(ignoreString);
-	cout << *locate;
-	Point* editBox = new Point(locate->X() + locate->Content().size(), locate->Y());
+	locate->setContent({ ignoreString });
+	locate->print();
+	Point* editBox = new Point(locate->X() + locate->Content()[0].size(), locate->Y());
 	editString = editBox->controlConsoleInput(0, 20);
-	Point* confirmBox = new Point(locate->X() + locate->Content().size() + editString.size() + 1 /*Khoang cach giua edit va confirm*/, locate->Y());
+	Point* confirmBox = new Point(locate->X() + locate->Content()[0].size() + editString.size() + 1 /*Khoang cach giua edit va confirm*/, locate->Y());
 	if (editString != "") {
 		confirmChange = Interface::YesNoQuestionBox(confirmBox, "Confirm? ");
 	}
@@ -113,11 +113,11 @@ string InfoPage::edit(Point*& locate, string ignoreString) {
 		editBox->clearPrintedContent();
 		locate->clearPrintedContent();
 		locate->setContent(oldContent);
-		cout << *locate;
+		locate->print();
 		editString = "";
 	}
 	else {
-		locate->setContent(ignoreString + editString);
+		locate->setContent({ ignoreString + editString });
 	}
 	delete confirmBox, editBox;
 	return editString;
@@ -191,7 +191,7 @@ void EnrollPage::initializePage() {
 			}
 			string warning = checkCourseHasSameTime(it);
 			courseInfo << warning;
-			_courseChosenTable->insertRowBelow({ courseInfo.str() });
+			_courseChosenTable->insertRowBelow({ { courseInfo.str() } });
 		}
 		enrollPage->insertBelow(*_courseChosenTable);
 		enrollPage->insertRowBelow({ "SAVE CHANGES " });
@@ -227,7 +227,7 @@ void EnrollPage::executeFunction(Point* locate) {
 bool EnrollPage::preventCreateNewPage() {
 	if (flagPickCourse == true) {
 		int x = getIPageTable()->getTable().size() - 1;
-		getIPageTable()->getTable()[x][0]->setContent("SAVE CHANGES (WARNING: PLEASE SAVE!!!)");
+		getIPageTable()->getTable()[x][0]->setContent( "SAVE CHANGES (WARNING: PLEASE SAVE!!!)" );
 	}
 	return flagPickCourse;
 }
@@ -355,12 +355,13 @@ void EnrollPage::pickCourse(Point* locate) {
 void EnrollPage::deleteCourse(Point* locate) {
 	bool confirmChange = false;
 	Point* confirmBox = new Point
-	(getIPageTable()->getTable()[locate->X()][locate->Y()]->X() + getIPageTable()->getTable()[locate->X()][locate->Y()]->Content().size() + 1 /*Khoang cach giua edit va confirm*/, getIPageTable()->getTable()[locate->X()][locate->Y()]->Y());
+	(getIPageTable()->getTable()[locate->X()][locate->Y()]->X() + getIPageTable()->getTable()[locate->X()][locate->Y()]->Content()[0].size() + 1 /*Khoang cach giua edit va confirm*/, getIPageTable()->getTable()[locate->X()][locate->Y()]->Y());
 	confirmChange = Interface::YesNoQuestionBox(confirmBox, "Confirm remove this course? ");
 	if (confirmChange == true) {
 		increaseSlot(_courseChosenStore[locate->X() - _courseStore.size() - 2]);
 		_courseChosenStore.erase(_courseChosenStore.begin() + (locate->X() - _courseStore.size() - 2)); // loai dong chosen course 
 		getIPageTable()->deleteRow(locate->X());
+		if (_courseChosenStore.empty()) flagPickCourse = false;
 	}
 	delete confirmBox;
 }
@@ -368,7 +369,7 @@ void EnrollPage::deleteCourse(Point* locate) {
 void EnrollPage::saveChanges(Point* locate) {
 	getIPageTable()->showTableContent(); // dong warning khi refresh bi xoa, chua in ra man hinh lai
 	bool confirmChange = false;
-	Point* confirmBox = new Point(locate->X() + locate->Content().size() + 1 /*Khoang cach giua edit va confirm*/, locate->Y());
+	Point* confirmBox = new Point(locate->X() + locate->Content()[0].size() + 1 /*Khoang cach giua edit va confirm*/, locate->Y());
 	confirmChange = Interface::YesNoQuestionBox(confirmBox, "Confirm? ");
 	if (confirmChange == true) {
 		for (auto it : _courseChosenStore) {
@@ -451,7 +452,7 @@ void TranscriptPage::initializePage() {
 	Table* TranscriptPage = new Table(3, 3, 2, 4);
 	TranscriptPage->insertRowBelow({ "Course", "ProcessPoint", "MidPoint", "FinalPoint" });
 	for (auto it : getStateIPage()->User()->getCourse()) {
-		vector<string> coursePoint;
+		vector <string> coursePoint;
 		coursePoint.push_back(it->Name() + " ");
 		for (auto it2 : it->Point()) {
 			stringstream point;
@@ -523,8 +524,8 @@ void Interface::login() {
 	ifstream file("Student.json", ios::in);
 	if (file.fail()) cout << "Cannot open file!" << endl;
 	else {
-		textBox >> "NHAP ID:";
-		cout << textBox;
+		textBox.setContent("NHAP ID:");
+		textBox.print();
 		json allStudent = json::array();
 		file >> allStudent;
 		while (flag == false) {
@@ -532,7 +533,7 @@ void Interface::login() {
 			for (unsigned i = 0; i < allStudent.size(); i++) {
 				if (allStudent[i]["id"] == id) {
 					flag = true;
-					if (!errorTextBox.isEmpty()) errorTextBox.clearPrintedContent();
+					errorTextBox.clearPrintedContent();
 					State* temp = new State();
 					temp->setStudent(new Student(allStudent[i]));
 					setState(temp);
@@ -540,8 +541,8 @@ void Interface::login() {
 				}
 				else {
 					loginTextBox.clearPrintedContent();
-					errorTextBox >> "Can't find this id";
-					cout << errorTextBox;
+					errorTextBox.setContent( "Can't find this id" );
+					errorTextBox.print();
 				}
 			}
 		}
@@ -551,13 +552,13 @@ void Interface::login() {
 }
 
 bool Interface::YesNoQuestionBox(Point* locate, string sentence) {
-	locate->setContent(sentence + " ");
-	cout << *locate;
-	Table confirmTable(locate->X() + locate->Content().size(), locate->Y(), 1, 2, 1, 2);
+	locate->setContent({ sentence + " " });
+	locate->print();
+	Table confirmTable(locate->X() + locate->Content()[0].size(), locate->Y(), 1, 2, 1, 2);
 	confirmTable.getTable()[0][0]->setContent("Y");
 	confirmTable.getTable()[0][1]->setContent("N");
-	cout << *confirmTable.getTable()[0][0];
-	cout << *confirmTable.getTable()[0][1];
+	confirmTable.getTable()[0][0]->print();
+	confirmTable.getTable()[0][1]->print();
 	Point* confirm = confirmTable.moveWithinTable();
 	locate->clearPrintedContent();
 	confirmTable.getTable()[0][0]->clearPrintedContent();

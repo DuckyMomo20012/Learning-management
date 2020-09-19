@@ -41,12 +41,13 @@ public:
 public:
 	void createTable();
 	void createTable(Point* tableCoordinate);
+	void wrapText(unsigned rowPos, unsigned contentLimit);
 	void beautifyTable();
 	void insertLeft(const Table& other);
 	void insertRight(const Table& other);
 	void insertAbove(const Table& other);
 	void insertBelow(const Table& other);
-	void insertRowBelow(const vector<string>& values);
+	void insertRowBelow(const vector <string>& values);
 	void showTableContent();
 	Point* moveWithinTable();
 	void deleteRow(unsigned rowPos);

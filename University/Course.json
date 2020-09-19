@@ -6,16 +6,10 @@
         "time": [
             {
                 "shift": [
-                    "3",
-                    "4"
+                    "1",
+                    "2"
                 ],
-                "weekday": "MONDAY"
-            },
-            {
-                "shift": [
-                    "3"
-                ],
-                "weekday": "WEDNESDAY"
+                "weekday": "TUESDAY"
             }
         ],
         "totalSlot": 10
@@ -23,21 +17,14 @@
     {
         "id": "CSC0004",
         "name": "CNXHKH",
-        "slot": 6,
+        "slot": 10,
         "time": [
             {
                 "shift": [
                     "3",
                     "4"
                 ],
-                "weekday": "MONDAY"
-            },
-            {
-                "shift": [
-                    "3",
-                    "4"
-                ],
-                "weekday": "WEDNESDAY"
+                "weekday": "THURSDAY"
             }
         ],
         "totalSlot": 10
@@ -45,21 +32,36 @@
     {
         "id": "CSC0006",
         "name": "KTLT",
-        "slot": 5,
+        "slot": 10,
         "time": [
             {
                 "shift": [
-                    "2",
-                    "4"
+                    "2"
                 ],
                 "weekday": "MONDAY"
             },
             {
                 "shift": [
                     "1",
-                    "4"
+                    "2"
                 ],
-                "weekday": "WEDNESDAY"
+                "weekday": "TUESDAY"
+            }
+        ],
+        "totalSlot": 10
+    },
+    {
+        "id": "CSC0006",
+        "name": "KTLT",
+        "slot": 10,
+        "time": [
+            {
+                "shift": [
+                    "1",
+                    "2",
+                    "3"
+                ],
+                "weekday": "TUESDAY"
             }
         ],
         "totalSlot": 10

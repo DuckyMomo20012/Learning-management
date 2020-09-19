@@ -1,6 +1,6 @@
 [
     {
-        "address": "30 Duong Le Phuong 16 Quan Go Thanh pho Ho",
+        "address": "30 Duong Le Phuong 16 Quan Go Thanh pho Ho Chi Minh",
         "course": [
             {
                 "id": "CSC0002",
@@ -83,39 +83,7 @@
     },
     {
         "address": "25 Duong Van Phuong 16 Quan Vap Thanh pho Chi",
-        "course": [
-            {
-                "id": "CSC0004",
-                "name": "VTP2",
-                "point": {
-                    "0": [
-                        8,
-                        7,
-                        8,
-                        9
-                    ],
-                    "1": [
-                        7,
-                        8
-                    ],
-                    "2": [
-                        10
-                    ]
-                },
-                "time": [
-                    [
-                        {
-                            "shift": "3",
-                            "weekday": "WEDNESDAY"
-                        },
-                        {
-                            "shift": "4",
-                            "weekday": "THURSDAY"
-                        }
-                    ]
-                ]
-            }
-        ],
+        "course": [],
         "department": "CNPM",
         "dob": "03/09/2002",
         "email": "hunglan.vinh@gmail.com",

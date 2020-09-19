@@ -2,7 +2,7 @@
     {
         "id": "CSC0004",
         "name": "CNXHKH",
-        "slot": 9,
+        "slot": 10,
         "time": [
             {
                 "shift": [
@@ -23,7 +23,7 @@
     {
         "id": "CSC0004",
         "name": "CNXHKH",
-        "slot": 9,
+        "slot": 6,
         "time": [
             {
                 "shift": [
@@ -45,7 +45,7 @@
     {
         "id": "CSC0006",
         "name": "KTLT",
-        "slot": 9,
+        "slot": 5,
         "time": [
             {
                 "shift": [

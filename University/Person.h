@@ -21,7 +21,7 @@ public:
 	void setTelephone(string value) { _tel = value; }
 	string Email() { return _email; }
 	void setEmail(string value) { _email = value; }
-	string getAddress() { return _address; }
+	string Address() { return _address; }
 	void setAddress(string value) { _address = value; }
 	string DOB() { return _dob; }
 	void setDOB(string value) { _dob = value; }
@@ -29,12 +29,12 @@ public:
 
 class Student : public Person {
 private:
-	string _schoolYear, _department;
+	string _intake, _department;
 	vector<Course*> _course;
 public:
-	Student() : Person(), _schoolYear(""), _department("") {};
+	Student() : Person(), _intake(""), _department("") {};
 	Student(const json& info) : Person(info) {
-		setSchoolYear(info["schoolyear"]);
+		setIntake(info["schoolyear"]);
 		setDepartment(info["department"]);
 		if (info["course"].size() > 0) {
 			for (auto it : info["course"]) {
@@ -50,8 +50,8 @@ public:
 		}
 	}
 public:
-	string SchoolYear() { return _schoolYear; }
-	void setSchoolYear(string value) { _schoolYear = value; }
+	string Intake() { return _intake; }
+	void setIntake(string value) { _intake = value; }
 	string Department() { return _department; }
 	void setDepartment(string value) { _department = value; }
 	vector<Course*> getCourse() { return _course; }

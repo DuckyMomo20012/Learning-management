@@ -32,11 +32,13 @@ void MainPage::executeFunction(Point* locate) {
 void InfoPage::initializePage() {
 	Table* infoPage = new Table(3, 3, 2, 4);
 	infoPage->insertRowBelow({ "ID: " + getStateIPage()->User()->Id() });
+	infoPage->insertRowBelow({ "DEPARTMENT: " + getStateIPage()->User()->Department() });
+	infoPage->insertRowBelow({ "INTAKE: " + getStateIPage()->User()->Intake() });
 	infoPage->insertRowBelow({ "NAME: " + getStateIPage()->User()->Name() });
 	infoPage->insertRowBelow({ "D.O.B: " + getStateIPage()->User()->DOB() });
 	infoPage->insertRowBelow({ "TELEPHONE: " + getStateIPage()->User()->Telephone() });
 	infoPage->insertRowBelow({ "EMAIL: " + getStateIPage()->User()->Email() });
-	infoPage->insertRowBelow({ "ADDRESS: " + getStateIPage()->User()->getAddress() });
+	infoPage->insertRowBelow({ "ADDRESS: " + getStateIPage()->User()->Address() });
 	infoPage->insertAbove(*getStateIPage()->getMenuTable());
 	setIPageTable(infoPage);
 }
@@ -203,11 +205,11 @@ void EnrollPage::executeFunction(Point* locate) {
 		tempState->setExitFlag(Interface::YesNoQuestionBox(new Point(2, 2), "Do u want to exit?"));
 		setStateIPage(tempState);
 	}
-	else if ((locate->X() >= 1 && locate->X() <= _courseStore.size()) && 0 == locate->Y()) {
+	else if ((locate->X() >= 1 && (unsigned)locate->X() <= _courseStore.size()) && 0 == locate->Y()) {
 		pickCourse(locate);
 		refresh();
 	}
-	else if ((locate->X() > _courseStore.size() && locate->X() < getIPageTable()->getTable().size() - 1) && 0 == locate->Y()) {
+	else if (((unsigned)locate->X() > (_courseStore.size() + 1) && (unsigned)locate->X() < getIPageTable()->getTable().size() - 1) && 0 == locate->Y()) {
 		deleteCourse(locate);
 		refresh();
 	}
@@ -220,6 +222,14 @@ void EnrollPage::executeFunction(Point* locate) {
 		tempState->setGoBackFlag(true);
 		setStateIPage(tempState);
 	}
+}
+
+bool EnrollPage::preventCreateNewPage() {
+	if (flagPickCourse == true) {
+		int x = getIPageTable()->getTable().size() - 1;
+		getIPageTable()->getTable()[x][0]->setContent("SAVE CHANGES (WARNING: PLEASE SAVE!!!)");
+	}
+	return flagPickCourse;
 }
 
 void EnrollPage::getCourse() {
@@ -324,10 +334,21 @@ void EnrollPage::pickCourse(Point* locate) {
 	if (_courseChosenStore.empty() == true) {
 		_courseChosenStore.push_back(chosenCourse);
 		decreaseSlot(chosenCourse);
+		flagPickCourse = true;
 	}
 	else {
-		_courseChosenStore.push_back(chosenCourse);
-		decreaseSlot(chosenCourse);
+		bool checkSameCourse = false;
+		for (auto it : _courseChosenStore) {
+			if (chosenCourse->Id() == it->Id()) {
+				checkSameCourse = true;
+				break;
+			}
+		}
+		if (checkSameCourse == false) {
+			_courseChosenStore.push_back(chosenCourse);
+			decreaseSlot(chosenCourse);
+			flagPickCourse = true;
+		}
 	}
 }
 
@@ -345,6 +366,7 @@ void EnrollPage::deleteCourse(Point* locate) {
 }
 
 void EnrollPage::saveChanges(Point* locate) {
+	getIPageTable()->showTableContent(); // dong warning khi refresh bi xoa, chua in ra man hinh lai
 	bool confirmChange = false;
 	Point* confirmBox = new Point(locate->X() + locate->Content().size() + 1 /*Khoang cach giua edit va confirm*/, locate->Y());
 	confirmChange = Interface::YesNoQuestionBox(confirmBox, "Confirm? ");
@@ -352,9 +374,46 @@ void EnrollPage::saveChanges(Point* locate) {
 		for (auto it : _courseChosenStore) {
 			getStateIPage()->User()->pushBackCourse(it);
 		}
+		saveStudentCourseData(_courseChosenStore);
 		_courseChosenStore.clear();
+		flagPickCourse = false;
 	}
 	delete confirmBox;
+}
+
+void EnrollPage::saveStudentCourseData(vector <Course*> newCourseList) {
+	ifstream file("Student.json", ios::in);
+	if (file.fail()) cout << "CANNOT OPEN FILE!!!";
+	else {
+		Student* currentStudent = getStateIPage()->User();
+		json arrayStudent = json::array();
+		file >> arrayStudent;
+		for (unsigned i = 0; i < arrayStudent.size(); i++) {
+			if (arrayStudent[i]["id"] == currentStudent->Id()) {
+				for (auto it : newCourseList) {
+					json newCourse;
+					newCourse["id"] = it->Id();
+					newCourse["name"] = it->Name();
+					json timeArray = json::array();
+					int j = 0;
+					for (auto it2 : it->Time()) {
+						timeArray[j]["weekday"] = it2.first;
+						timeArray[j]["shift"] = it2.second;
+						j++;
+					}
+					newCourse["time"] = timeArray;
+					arrayStudent[i]["course"].push_back(newCourse);
+				}
+			}
+		}
+		ofstream fileout("Student.json", ios::trunc);
+		if (fileout.fail()) cout << "CANNOT OPEN FILE";
+		else {
+			fileout << arrayStudent.dump(4);
+		}
+		fileout.close();
+	}
+	file.close();
 }
 
 string EnrollPage::checkCourseHasSameTime(Course* course) {
@@ -510,19 +569,55 @@ bool Interface::YesNoQuestionBox(Point* locate, string sentence) {
 void Interface::run() {
 	login();
 	_care.push_back(new MainPage(getState()));
-	while (getState()->ExitFlag() == false) {
+	bool flagExit = false;
+	while (flagExit == false) {
 		system("cls");
 		getCare().getCurrentPage()->getIPageTable()->showTableContent();
 		Point* locate = getCare().getCurrentPage()->getIPageTable()->moveWithinTable();
-		IPage* newPage = Factory::clone(locate, getState());
-		if (newPage != NULL && newPage != getCare().getCurrentPage()) {
-			_care.push_back(newPage);
+		preventCreateNewPage = _care.getCurrentPage()->preventCreateNewPage();
+		if (preventCreateNewPage == false) {
+			IPage* newPage = Factory::clone(locate, getState());
+			if (newPage != NULL && newPage != getCare().getCurrentPage()) {
+				_care.push_back(newPage);
+			}
+			else _care.getCurrentPage()->executeFunction(locate);
+			if (getState()->GoBackFlag() == true) {
+				_care.pop_back();
+				getState()->setGoBackFlag(false);
+			}
+			else if (getState()->ExitFlag() == true) flagExit = true;
 		}
-		else _care.getCurrentPage()->executeFunction(locate);
-		if (getState()->GoBackFlag() == true) {
-			_care.pop_back();
-			getState()->setGoBackFlag(false);
+		else {
+			preventCreateNewPage = true;
+			_care.getCurrentPage()->executeFunction(locate);
 		}
 	}
+	saveStudentInfoData();
 	system("cls");
+}
+
+void Interface::saveStudentInfoData() {
+	ifstream file("Student.json", ios::in);
+	if (file.fail()) cout << "CANNOT OPEN FILE!!!";
+	else {
+		Student* currentStudent = getState()->User();
+		json arrayStudent = json::array();
+		file >> arrayStudent;
+		for (unsigned i = 0; i < arrayStudent.size(); i++) {
+			if (arrayStudent[i]["id"] == currentStudent->Id()) {
+				arrayStudent[i]["name"] = currentStudent->Name();
+				arrayStudent[i]["tel"] = currentStudent->Telephone();
+				arrayStudent[i]["address"] = currentStudent->Address();
+				arrayStudent[i]["dob"] = currentStudent->DOB();
+				arrayStudent[i]["email"] = currentStudent->Email();
+			}
+		}
+		ofstream fileout("Student.json", ios::trunc);
+		if (fileout.fail()) cout << "CANNOT OPEN FILE";
+		else {
+			fileout << arrayStudent.dump(4);
+		}
+		fileout.close();
+	}
+	file.close();
 }

@@ -1,106 +1,127 @@
 [
-{
-    "id" : "19127631",
-    "name" : "Vinh",
-    "tel" : "0971288696",
-    "email" : "tienvinh.duong4@gmail.com",
-    "address" : "30 Duong Le Phuong 16 Quan Go Thanh pho Ho",
-    "dob" : "03/09/2001",
-    "schoolyear" : "K19",
-    "department": "CNTT",
-    "course": [
-      {
-        "id" : "CSC0002",
-        "name" :  "DAI SO TUYEN TINH",
-        "point" : {
-          "0" : [8, 7, 8, 9],
-          "1" : [7, 8],
-          "2" : [10]
-        },
-        "time" : [
-          {
-              "weekday" : "MONDAY",
-              "shift" : ["1", "2"]
-          },
-          {
-              "weekday" : "WEDNESDAY",
-              "shift" : ["3", "4"]
-          }
-      ]
-      },
-      {
-        "id" : "CSC00001",
-        "name" : "OOP",
-        "point" : {
-          "0" : [8, 7, 8, 9],
-          "1" : [7, 8],
-          "2" : [9]
-        },
-        "time" : [
-          {
-              "weekday" : "MONDAY",
-              "shift" : ["3", "4"]
-          },
-          {
-              "weekday" : "THURSDAY",
-              "shift" : ["1", "4"]
-          }
-        ]
-      }
-    ]
-},
-{
-    "id" : "19127632",
-    "name" : "Hung",
-    "tel" : "0971288695",
-    "email" : "hunglan.vinh@gmail.com",
-    "address" : "25 Duong Van Phuong 16 Quan Vap Thanh pho Chi",
-    "dob" : "03/09/2002",
-    "schoolyear" : "K20",
-    "department" : "CNPM",
-    "course": [
-      {
-        "id" : "CSC0004",
-        "name" :  "VTP2",
-        "point" : {
-          "0" : [8, 7, 8, 9],
-          "1" : [7, 8],
-          "2" : [10]
-        },
-        "time" : [
-          [
-          {
-              "weekday" : "WEDNESDAY",
-              "shift" : "3"
-          },
-          {
-              "weekday" : "THURSDAY",
-              "shift" : "4"
-          }
-        ]
-      ]
-      },
-      {
-        "id" : "CSC00005",
-        "name" : "CNXHKH",
-        "point" : {
-          "0" : [8, 7, 8, 9],
-          "1" : [7, 8],
-          "2" : [10]
-        },
-        "time" : [
-          [
-          {
-              "weekday" : "MONDAY",
-              "shift" : "1"
-          },
-          {
-              "weekday" : "WEDNESDAY",
-              "shift" : "3"
-          }
-        ]
-      ]
-      }
-    ]
-}
+    {
+        "address": "30 Duong Le Phuong 16 Quan Go Thanh pho Ho",
+        "course": [
+            {
+                "id": "CSC0002",
+                "name": "DAI SO TUYEN TINH",
+                "point": {
+                    "0": [
+                        8,
+                        7,
+                        8,
+                        9
+                    ],
+                    "1": [
+                        7,
+                        8
+                    ],
+                    "2": [
+                        10
+                    ]
+                },
+                "time": [
+                    {
+                        "shift": [
+                            "1",
+                            "2"
+                        ],
+                        "weekday": "MONDAY"
+                    },
+                    {
+                        "shift": [
+                            "3",
+                            "4"
+                        ],
+                        "weekday": "WEDNESDAY"
+                    }
+                ]
+            },
+            {
+                "id": "CSC00001",
+                "name": "OOP",
+                "point": {
+                    "0": [
+                        8,
+                        7,
+                        8,
+                        9
+                    ],
+                    "1": [
+                        7,
+                        8
+                    ],
+                    "2": [
+                        9
+                    ]
+                },
+                "time": [
+                    {
+                        "shift": [
+                            "3",
+                            "4"
+                        ],
+                        "weekday": "MONDAY"
+                    },
+                    {
+                        "shift": [
+                            "1",
+                            "4"
+                        ],
+                        "weekday": "THURSDAY"
+                    }
+                ]
+            }
+        ],
+        "department": "CNTT",
+        "dob": "03/09/2001",
+        "email": "tienvinh.duong4@gmail.com",
+        "id": "19127631",
+        "name": "Nhung",
+        "schoolyear": "K19",
+        "tel": "0971288696"
+    },
+    {
+        "address": "25 Duong Van Phuong 16 Quan Vap Thanh pho Chi",
+        "course": [
+            {
+                "id": "CSC0004",
+                "name": "VTP2",
+                "point": {
+                    "0": [
+                        8,
+                        7,
+                        8,
+                        9
+                    ],
+                    "1": [
+                        7,
+                        8
+                    ],
+                    "2": [
+                        10
+                    ]
+                },
+                "time": [
+                    [
+                        {
+                            "shift": "3",
+                            "weekday": "WEDNESDAY"
+                        },
+                        {
+                            "shift": "4",
+                            "weekday": "THURSDAY"
+                        }
+                    ]
+                ]
+            }
+        ],
+        "department": "CNPM",
+        "dob": "03/09/2002",
+        "email": "hunglan.vinh@gmail.com",
+        "id": "19127632",
+        "name": "Hung",
+        "schoolyear": "K20",
+        "tel": "0971288695"
+    }
 ]

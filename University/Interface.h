@@ -54,6 +54,7 @@ public:
 public:
 	virtual void initializePage() = 0;
 	virtual void executeFunction(Point* locate) = 0;
+	virtual bool preventCreateNewPage() { return false; }
 };
 
 class MainPage : public IPage {
@@ -90,10 +91,11 @@ public:
 
 class EnrollPage : public IPage {
 private:
+	bool flagPickCourse;
 	vector <pair<Course*, string>> _courseStore;
 	vector <Course*> _courseChosenStore;
 private:
-	EnrollPage(State* state) : IPage(state) {
+	EnrollPage(State* state) : IPage(state), flagPickCourse(false) {
 		initializePage();
 	}
 public:
@@ -103,6 +105,7 @@ public:
 	}
 	void initializePage() override;
 	void executeFunction(Point* locate) override;
+	bool preventCreateNewPage() override;
 public:
 	void getCourse();
 	void refresh();
@@ -111,6 +114,7 @@ public:
 	void pickCourse(Point* locate);
 	void deleteCourse(Point* locate);
 	void saveChanges(Point* locate);
+	void saveStudentCourseData(vector <Course*> newCourse);
 	string checkCourseHasSameTime(Course* course);
 };
 
@@ -123,10 +127,6 @@ public:
 		initializePage();
 	}
 public:
-	//static IPage* instance(State* state) {
-	//	static TranscriptPage* neo = new TranscriptPage(state);
-	//	return neo;
-	//}
 	void initializePage() override;
 	void executeFunction(Point* locate) override;
 public:
@@ -152,8 +152,9 @@ class Interface {
 private:
 	State* _state;
 	Caretaker _care;
+	bool preventCreateNewPage;
 public:
-	Interface() : _state() {
+	Interface() : _state(), preventCreateNewPage(false) {
 		//resizeConsole(900, 500);
 	}
 public:
@@ -166,4 +167,5 @@ public:
 	void login();
 	static bool YesNoQuestionBox(Point* locate, string sentence);
 	void run();
+	void saveStudentInfoData();
 };

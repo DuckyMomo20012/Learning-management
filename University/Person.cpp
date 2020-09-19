@@ -14,9 +14,9 @@ Student::Student(Student& other) {
 	setName(other.Name());
 	setTelephone(other.Telephone());
 	setEmail(other.Email());
-	setAddress(other.getAddress());
+	setAddress(other.Address());
 	setDOB(other.DOB());
-	setSchoolYear(other._schoolYear);
+	setIntake(other._intake);
 	setDepartment(other._department);
 	for (auto it : other._course) {
 		this->_course.push_back(it);
@@ -28,9 +28,9 @@ Student& Student::operator=(Student& other) {
 	setName(other.Name());
 	setTelephone(other.Telephone());
 	setEmail(other.Email());
-	setAddress(other.getAddress());
+	setAddress(other.Address());
 	setDOB(other.DOB());
-	setSchoolYear(other._schoolYear);
+	setIntake(other._intake);
 	setDepartment(other._department);
 	for (auto it : other._course) {
 		this->_course.push_back(it);

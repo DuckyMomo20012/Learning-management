@@ -89,7 +89,7 @@ void Table::wrapText(unsigned rowPos, unsigned contentLimit) {
 
 void Table::beautifyTable() {
 	for (unsigned k = 0; k < _table.size(); k++) {
-		wrapText(k, 30);
+		wrapText(k, 50);
 	}
 	for (unsigned i = 0; i < (unsigned)_col; i++) {
 		unsigned max_string = 0;

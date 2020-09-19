@@ -155,7 +155,7 @@ private:
 	bool preventCreateNewPage;
 public:
 	Interface() : _state(), preventCreateNewPage(false) {
-		//resizeConsole(900, 500);
+		resizeConsole(900, 500);
 	}
 public:
 	State* getState() { return _state; }

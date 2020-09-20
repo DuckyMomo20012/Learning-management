@@ -125,20 +125,25 @@ string InfoPage::edit(Point*& locate, string ignoreString) {
 
 void SchedulePage::initializePage() {
 	vector <string> weekday = { "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" };
-	Table* schedulePage(new Table(3, 3, 2, 2, 5, 6));
+	Table* schedulePage(new Table(3, 3, 2, 4, 5, 6));
 	schedulePage->getTable()[0][0]->setContent("SHIFT");
 	schedulePage->getTable()[1][0]->setContent("1");
 	schedulePage->getTable()[2][0]->setContent("2");
 	schedulePage->getTable()[3][0]->setContent("3");
 	schedulePage->getTable()[4][0]->setContent("4");
-	for (int i = 1; i < 6; i++) { // 6 ngay trong tuan
-		schedulePage->getTable()[0][i]->setContent(weekday[i - 1]);
-		for (auto it : getStateIPage()->User()->getCourse()) {
-			map<string, vector<string>> time = it->Time();
-			if (time.find(weekday[i - 1]) != time.end()) {
-				for (auto shiftAmount : time[weekday[i - 1]]) { // so ca hoc trong ngay
-					string shift = shiftAmount;
-					schedulePage->getTable()[stoi(shift)][i]->setContent(it->Name());
+
+	schedulePage->getTable()[0][1]->setContent("MONDAY");
+	schedulePage->getTable()[0][2]->setContent("TUESDAY");
+	schedulePage->getTable()[0][3]->setContent("WEDNESDAY");
+	schedulePage->getTable()[0][4]->setContent("THURSDAY");
+	schedulePage->getTable()[0][5]->setContent("FRIDAY");
+	for (auto it : getStateIPage()->User()->getCourse()) {
+		for (int i = 0; i < weekday.size(); i++) {
+			for (auto it2 : it->Time()) {
+				if (it2.first == weekday[i]) {
+					for (auto it3 : it2.second) {
+						schedulePage->getTable()[stoi(it3)][i]->setContent(it->Name());
+					}
 				}
 			}
 		}

@@ -1,6 +1,6 @@
 [
     {
-        "address": "30 Duong Le Phuong 16 Quan Go Thanh pho Ho Chi Minh",
+        "address": "30 Duong Le Loi Phuong 16 Quan 1 Thanh pho Ho Chi Minh",
         "course": [
             {
                 "id": "CSC0002",
@@ -77,18 +77,18 @@
         "dob": "03/09/2001",
         "email": "tienvinh.duong4@gmail.com",
         "id": "19127631",
-        "name": "Nhung",
+        "name": "Vinh",
         "schoolyear": "K19",
         "tel": "0971288696"
     },
     {
-        "address": "25 Duong Van Phuong 16 Quan Vap Thanh pho Chi",
+        "address": "25 Duong Nguyen Van Cu Phuong 16 Quan 5 Thanh pho Ho Chi Minh",
         "course": [],
         "department": "CNPM",
         "dob": "03/09/2002",
-        "email": "hunglan.vinh@gmail.com",
+        "email": "abc@gmail.com",
         "id": "19127632",
-        "name": "Hung",
+        "name": "Huy",
         "schoolyear": "K20",
         "tel": "0971288695"
     }

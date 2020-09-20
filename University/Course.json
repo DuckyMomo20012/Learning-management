@@ -32,7 +32,7 @@
     {
         "id": "CSC0006",
         "name": "KTLT",
-        "slot": 9,
+        "slot": 10,
         "time": [
             {
                 "shift": [
@@ -61,7 +61,7 @@
                     "2",
                     "3"
                 ],
-                "weekday": "THRUSDAY"
+                "weekday": "THURSDAY"
             }
         ],
         "totalSlot": 10

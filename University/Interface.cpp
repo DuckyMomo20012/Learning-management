@@ -142,7 +142,7 @@ void SchedulePage::initializePage() {
 			for (auto it2 : it->Time()) {
 				if (it2.first == weekday[i]) {
 					for (auto it3 : it2.second) {
-						schedulePage->getTable()[stoi(it3)][i]->setContent(it->Name());
+						schedulePage->getTable()[stoi(it3)][i + 1]->setContent(it->Name());
 					}
 				}
 			}

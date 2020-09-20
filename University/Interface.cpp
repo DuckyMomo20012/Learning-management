@@ -138,7 +138,7 @@ void SchedulePage::initializePage() {
 	schedulePage->getTable()[0][4]->setContent("THURSDAY");
 	schedulePage->getTable()[0][5]->setContent("FRIDAY");
 	for (auto it : getStateIPage()->User()->getCourse()) {
-		for (int i = 0; i < weekday.size(); i++) {
+		for (unsigned i = 0; i < weekday.size(); i++) {
 			for (auto it2 : it->Time()) {
 				if (it2.first == weekday[i]) {
 					for (auto it3 : it2.second) {
